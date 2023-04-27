@@ -136,6 +136,7 @@ export default defineComponent({
   }
   .right {
     flex: 1 1 auto;
+    overflow-y: scroll;
     .top_area {
       height: 100px;
       display: flex;
@@ -171,6 +172,12 @@ export default defineComponent({
           font-size: 14px;
         }
       }
+    }
+    .content {
+      box-sizing: border-box;
+      padding: 20px 40px;
+      min-height: calc(100vh - 100px);
+      background-color: #dcebe4;
     }
   }
 }
