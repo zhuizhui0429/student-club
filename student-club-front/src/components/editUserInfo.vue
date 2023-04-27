@@ -178,6 +178,6 @@ export default defineComponent({
 <style lang="less" scoped>
 .edit_user_info_container {
   width: 400px;
-  height: 800px;
+  height: 500px;
 }
 </style>

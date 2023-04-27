@@ -91,7 +91,7 @@ export default defineComponent({
       :width="848"
       :footer="null"
       v-model:open="clubDetailModalVisible"
-      bodyStyle="width:800px;height:460px;"
+      :bodyStyle="{ width: 800, height: 460 }"
     >
       <Loading
         :loading="loadingClubDetail"
@@ -143,7 +143,7 @@ export default defineComponent({
         </div>
       </div>
       <div class="club_detail_operation_area">
-        <a-button v-if="!hasJoined" type="primary" :size="size">
+        <a-button v-if="!hasJoined" type="primary" size="large">
           <template #icon> <SmileTwoTone /> </template>
           申请加入俱乐部
         </a-button>

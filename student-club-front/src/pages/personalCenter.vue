@@ -156,13 +156,7 @@ export default defineComponent({
         >编辑个人信息</a-button
       >
     </div>
-    <a-modal
-      title="更新个人信息"
-      :width="500"
-      :footer="null"
-      v-model:open="editFormVisible"
-      bodyStyle="width:548px;height:460px;"
-    >
+    <a-modal title="更新个人信息" :footer="null" v-model:open="editFormVisible">
       <EditUserInfo />
     </a-modal>
   </div>
