@@ -20,6 +20,8 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
+      "@const":["./src/constant.ts"],
+      "@comp/*":["./src/components/*"],
       "@api":["./src/api/index.ts"],
       "@store":["./src/store/index.ts"],
       "@/*":["./src/*"]
