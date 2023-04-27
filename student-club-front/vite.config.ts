@@ -23,6 +23,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      "@const": path.resolve(__dirname, "src", "constant.ts"),
+      "@comp": path.resolve(__dirname, "src", "components"),
       "@api": path.resolve(__dirname, "src", "api", "index.ts"),
       "@store": path.resolve(__dirname, "src", "store", "index.ts"),
       "@": path.resolve(__dirname, "src")
