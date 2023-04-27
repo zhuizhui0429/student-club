@@ -4,7 +4,6 @@ const Register = () => import('../pages/register.vue')
 const HomePage = () => import('@/pages/homePage.vue')
 const ClubSquare = () => import('@/pages/clubSquare.vue')
 const personalCenter = () => import(('@/pages/personalCenter.vue'))
-const MyMessage = () => import('@/pages/myMessage.vue')
 
 
 const routes: RouterOptions['routes'] = [
@@ -19,10 +18,6 @@ const routes: RouterOptions['routes'] = [
             {
                 path: 'personalCenter',
                 component: personalCenter
-            },
-            {
-                path: 'myMessage',
-                component: MyMessage
             }
         ]
     },
