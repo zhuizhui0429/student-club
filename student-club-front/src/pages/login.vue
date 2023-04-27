@@ -1,57 +1,57 @@
 <script lang="ts">
-import { defineComponent, ref, reactive } from 'vue'
-import { PlusSquareOutlined } from '@ant-design/icons-vue'
-import { Button } from 'ant-design-vue'
-import { RuleObject } from 'ant-design-vue/es/form/interface'
-import { FormExpose } from 'ant-design-vue/es/form/Form'
-import { useRouter } from 'vue-router'
+import { defineComponent, ref, reactive } from "vue";
+import { PlusSquareOutlined } from "@ant-design/icons-vue";
+import { Button } from "ant-design-vue";
+import { RuleObject } from "ant-design-vue/es/form/interface";
+import { FormExpose } from "ant-design-vue/es/form/Form";
+import { useRouter } from "vue-router";
 
 export interface LoginFormState {
-  account: string
-  password: string
+  account: string;
+  password: string;
 }
 
 export default defineComponent({
   setup() {
-    const router = useRouter()
-    const formRef = ref<FormExpose>({} as any)
+    const router = useRouter();
+    const formRef = ref<FormExpose>({} as any);
     const formState = reactive<LoginFormState>({
-      account: '',
-      password: ''
-    })
+      account: "",
+      password: "",
+    });
     const rules: Record<string, RuleObject | RuleObject[]> = {
       account: [
-        { required: true, message: '请输入账号', trigger: 'blur' },
+        { required: true, message: "请输入账号", trigger: "blur" },
         {
           min: 8,
           max: 16,
-          message: '账号长度为8~16位',
-          trigger: 'blur'
-        }
+          message: "账号长度为8~16位",
+          trigger: "blur",
+        },
       ],
       password: [
-        { required: true, message: '请输入密码', trigger: 'blur' },
+        { required: true, message: "请输入密码", trigger: "blur" },
         {
           min: 8,
           max: 16,
-          message: '密码长度为8~16位',
-          trigger: 'blur'
-        }
-      ]
-    }
+          message: "密码长度为8~16位",
+          trigger: "blur",
+        },
+      ],
+    };
 
     const submit = () => {
       formRef.value
         .validateFields()
         .then((state) => {
-          const { account, password } = state as LoginFormState
-          console.log('account', account)
-          console.log('password', password)
+          const { account, password } = state as LoginFormState;
+          console.log("account", account);
+          console.log("password", password);
         })
-        .catch((err) => console.log('err', err))
-    }
+        .catch((err) => console.log("err", err));
+    };
 
-    const navigateToRegister = () => router.push('/register')
+    const navigateToRegister = () => router.push("/register");
 
     return {
       formRef,
@@ -60,14 +60,14 @@ export default defineComponent({
       submit,
       labelCol: { span: 4 },
       wrapperCol: { span: 18, offset: 2 },
-      navigateToRegister
-    }
+      navigateToRegister,
+    };
   },
   components: {
     PlusSquareOutlined,
-    Button
-  }
-})
+    Button,
+  },
+});
 </script>
 <template>
   <div class="login_container">
@@ -87,12 +87,25 @@ export default defineComponent({
       <div class="login_area">
         <span class="login_text">登录俱乐部系统</span>
         <div class="form_area">
-          <a-form ref="formRef" :model="formState" :rules="rules" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-form
+            ref="formRef"
+            :model="formState"
+            :rules="rules"
+            :labelCol="labelCol"
+            :wrapperCol="wrapperCol"
+          >
             <a-form-item label="账号" name="account">
-              <a-input v-model:value="formState.account" placeholder="请输入账号..." />
+              <a-input
+                v-model:value="formState.account"
+                placeholder="请输入账号..."
+              />
             </a-form-item>
             <a-form-item label="密码" name="password">
-              <a-input type="password" v-model:value="formState.password" placeholder="请输入密码" />
+              <a-input
+                type="password"
+                v-model:value="formState.password"
+                placeholder="请输入密码"
+              />
             </a-form-item>
             <a-form-item>
               <a-button type="primary" @click="submit">现在登录</a-button>
@@ -104,7 +117,7 @@ export default defineComponent({
   </div>
 </template>
 
-<style lang='less' scoped>
+<style lang="less" scoped>
 .login_container {
   width: 100vw;
   background-color: #b8c4d1;
