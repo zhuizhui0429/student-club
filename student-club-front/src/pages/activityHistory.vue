@@ -12,7 +12,7 @@ import {
   ActivityFormStateType,
 } from "@api";
 import { ref, onMounted } from "vue";
-import ActivityForm from "@/components/ActivityForm.vue";
+import ActivityForm from "@/components/activityForm.vue";
 
 const data = ref<ActivityTableRecordType[]>([]);
 const loadingData = ref<boolean>(true);
