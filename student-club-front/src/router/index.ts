@@ -1,11 +1,13 @@
 import { RouterOptions, createRouter, createWebHistory } from 'vue-router'
-const Login = () => import('../pages/login.vue')
-const Register = () => import('../pages/register.vue')
-const HomePage = () => import('@/pages/homePage.vue')
-const ClubSquare = () => import('@/pages/clubSquare.vue')
-const personalCenter = () => import(('@/pages/personalCenter.vue'))
-const ManageClubMember = () => import('@/pages/manageClubMember.vue')
-const PublishActivity = () => import('@/pages/publishActivity.vue')
+const Login = () => import(('../pages/login'))
+const Register = () => import(('../pages/register'))
+const HomePage = () => import(('@/pages/homePage'))
+const ClubSquare = () => import(('@/pages/clubSquare'))
+const personalCenter = () => import(('@/pages/personalCenter'))
+const ManageClubMember = () => import(('@/pages/manageClubMember'))
+const PublishActivity = () => import(('@/pages/publishActivity'))
+const ActivityHistory = () => import(('@/pages/activityHistory'))
+
 
 
 const routes: RouterOptions['routes'] = [
@@ -28,6 +30,9 @@ const routes: RouterOptions['routes'] = [
             {
                 path: 'publishActivity',
                 component: PublishActivity
+            }, {
+                path: 'activityHistory',
+                component: ActivityHistory
             }
         ]
     },
