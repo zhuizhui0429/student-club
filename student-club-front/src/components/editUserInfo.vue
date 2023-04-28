@@ -164,7 +164,11 @@ export default defineComponent({
         </a-select>
       </a-form-item>
       <a-form-item label="个人简介" name="personalProfile">
-        <a-textarea v-model:value="formState.personalProfile" />
+        <a-textarea
+          :rows="2"
+          style="resize: none"
+          v-model:value="formState.personalProfile"
+        />
       </a-form-item>
       <a-form-item :wrapperCol="{ offset: 8, span: 8 }">
         <a-button type="primary" size="large" @click="handleUpdateInfo"

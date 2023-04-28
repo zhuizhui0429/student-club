@@ -280,6 +280,8 @@ const handleKickMember = () => {
         <a-textarea
           v-model:value="formState.content"
           placeholder="请输入消息内容"
+          :rows="3"
+          style="resize: none"
         />
       </a-form-item>
       <a-form-item :wrapperCol="{ offset: 10 }">
