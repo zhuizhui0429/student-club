@@ -4,6 +4,8 @@ const Register = () => import('../pages/register.vue')
 const HomePage = () => import('@/pages/homePage.vue')
 const ClubSquare = () => import('@/pages/clubSquare.vue')
 const personalCenter = () => import(('@/pages/personalCenter.vue'))
+const ManageClubMember = () => import('@/pages/manageClubMember.vue')
+const PublishActivity = () => import('@/pages/publishActivity.vue')
 
 
 const routes: RouterOptions['routes'] = [
@@ -18,6 +20,14 @@ const routes: RouterOptions['routes'] = [
             {
                 path: 'personalCenter',
                 component: personalCenter
+            },
+            {
+                path: 'manageClubMember',
+                component: ManageClubMember
+            },
+            {
+                path: 'publishActivity',
+                component: PublishActivity
             }
         ]
     },
