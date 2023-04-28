@@ -40,24 +40,32 @@ export default defineComponent({
       });
     });
 
-    const map: Record<string, string> = {
-      "/clubSquare": "俱乐部广场",
-      "/personalCenter": "个人中心",
-      "/publishActivity": "发布活动",
-      "/manageClubMember": "管理成员",
-      "/createClub": "新增俱乐部",
+    const map: Record<string, { title: string; subMenuKey?: string }> = {
+      "/clubSquare": { title: '俱乐部广场"' },
+      "/personalCenter": { title: "个人中心" },
+      "/publishActivity": { title: "发布活动", subMenuKey: "myClub" },
+      "/manageClubMember": { title: "管理成员", subMenuKey: "myClub" },
+      "/createClub": { title: "新增俱乐部" },
     };
+    const paths = Object.keys(map);
     const menuState = reactive<MenuProps>({
       theme: "dark",
       selectedKeys: [
-        Object.keys(map).includes(location.pathname)
-          ? location.pathname
-          : "/clubSquare",
+        paths.includes(location.pathname) ? location.pathname : "/clubSquare",
       ],
-      openKeys: [""],
+      openKeys: (() => {
+        const targetKeys: string[] = [];
+        const initialPathname = location.pathname;
+        for (const path of paths) {
+          if (path === initialPathname && map[path].subMenuKey) {
+            targetKeys.push(map[path].subMenuKey!);
+          }
+        }
+        return targetKeys;
+      })(),
     });
     const selectedMenuItemTitle = computed(
-      () => map[menuState.selectedKeys![0]]
+      () => map[menuState.selectedKeys![0]].title
     );
 
     const handleClickMenuItem: MenuProps["onClick"] = (data) => {
@@ -121,7 +129,6 @@ export default defineComponent({
           <template #title>我的俱乐部</template>
           <a-menu-item key="/publishActivity">发布活动</a-menu-item>
           <a-menu-item key="/manageClubMember">管理成员</a-menu-item>
-          <a-menu-item key="/createClub">新增俱乐部</a-menu-item>
         </a-sub-menu>
       </a-menu>
     </div>
