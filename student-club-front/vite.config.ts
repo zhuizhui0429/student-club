@@ -28,6 +28,7 @@ export default defineConfig({
       "@api": path.resolve(__dirname, "src", "api", "index.ts"),
       "@store": path.resolve(__dirname, "src", "store", "index.ts"),
       "@": path.resolve(__dirname, "src")
-    }
+    },
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
   }
 })

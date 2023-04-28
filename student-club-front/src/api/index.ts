@@ -1,4 +1,5 @@
 import { ClubPreviewType } from '@comp/clubCard'
+import { entryConditions } from '@const'
 
 export * from './message'
 export * from './manager'
@@ -82,7 +83,7 @@ export interface ActivityOfClub {
     title: string
     date: string
     location: string
-    entryCondition: string
+    entryCondition: (typeof entryConditions)[number]
 }
 
 export async function getClubActivityOfClubs(): Promise<ActivityOfClub[]> {
