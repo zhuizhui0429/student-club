@@ -7,6 +7,7 @@ const personalCenter = () => import(('@/pages/personalCenter'))
 const ManageClubMember = () => import(('@/pages/manageClubMember'))
 const PublishActivity = () => import(('@/pages/publishActivity'))
 const ActivityHistory = () => import(('@/pages/activityHistory'))
+const CreateClub = () => import(('@/pages/createClub'))
 
 
 
@@ -30,9 +31,14 @@ const routes: RouterOptions['routes'] = [
             {
                 path: 'publishActivity',
                 component: PublishActivity
-            }, {
+            },
+            {
                 path: 'activityHistory',
                 component: ActivityHistory
+            },
+            {
+                path: 'createClub',
+                component: CreateClub
             }
         ]
     },

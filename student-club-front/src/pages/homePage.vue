@@ -45,6 +45,7 @@ export default defineComponent({
       "/personalCenter": { title: "个人中心" },
       "/publishActivity": { title: "发布活动", subMenuKey: "myClub" },
       "/manageClubMember": { title: "管理成员", subMenuKey: "myClub" },
+      "/activityHistory": { title: "历史活动", subMenuKey: "myClub" },
       "/createClub": { title: "新增俱乐部" },
     };
     const paths = Object.keys(map);
@@ -129,7 +130,14 @@ export default defineComponent({
           <template #title>我的俱乐部</template>
           <a-menu-item key="/publishActivity">发布活动</a-menu-item>
           <a-menu-item key="/manageClubMember">管理成员</a-menu-item>
+          <a-menu-item key="/activityHistory">历史活动</a-menu-item>
         </a-sub-menu>
+        <a-menu-item key="/createClub">
+          <template #icon>
+            <UserOutlined />
+          </template>
+          新增俱乐部
+        </a-menu-item>
       </a-menu>
     </div>
     <div class="right">
