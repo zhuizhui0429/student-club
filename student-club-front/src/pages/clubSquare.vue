@@ -10,7 +10,6 @@ import {
   MemberOfClub,
   getAllActivitiesOfClub,
   ActivityOfClub,
-  hasJoinClub,
   judgeIsJoinClub,
 } from "@api";
 import {
@@ -119,6 +118,10 @@ export default defineComponent({
           </div>
           <div class="member_area">
             <span class="title">当前成员</span>
+            <a-empty
+              description="暂无成员加入"
+              v-if="!memberList.length"
+            ></a-empty>
             <div class="member_list">
               <div class="item" v-for="member in memberList" :key="member.id">
                 <div class="left">
@@ -141,6 +144,10 @@ export default defineComponent({
             :key="activity.title"
             v-bind="activity"
           />
+          <a-empty
+            description="暂未举行活动"
+            v-if="!activityList.length"
+          ></a-empty>
         </div>
       </div>
       <div class="club_detail_operation_area">
@@ -153,7 +160,6 @@ export default defineComponent({
           <span>你已加入该俱乐部</span>
         </p>
       </div>
-      >
     </a-modal>
   </div>
 </template>
