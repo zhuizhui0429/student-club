@@ -44,7 +44,7 @@ export default defineComponent({
         .then((state) => {
           login(state as LoginFormState)
             .then((res) => {
-              userStore.login(res.data.data);
+              userStore.updateState({ ...res.data.data, isLogin: true });
               router.push({ name: "clubSquare" });
             })
             .catch((err) => {});

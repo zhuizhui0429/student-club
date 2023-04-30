@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import Login from './pages/login.vue'
-import { useUserStore } from '@store'
-import { storeToRefs } from 'pinia'
+import Login from "./pages/login.vue";
+import { useUserStore } from "@store";
+const userStore = useUserStore();
+userStore.refreshData();
 </script>
 
 <template>
@@ -10,7 +11,7 @@ import { storeToRefs } from 'pinia'
   </div>
 </template>
 
-<style lang='less' >
+<style lang="less">
 * {
   margin: 0;
   padding: 0;

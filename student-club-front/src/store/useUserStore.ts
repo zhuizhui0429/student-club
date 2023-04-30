@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia'
 import { reactive, toRefs } from 'vue'
 import type { UserInfo } from '@api'
+import { login as loginRequest } from '@api'
 
-const LOGIN_INFO = 'login_info'
+export const LOGIN_INFO = 'login_state'
 
-interface UserStoreStateType extends Omit<UserInfo, 'account' | 'password'> {
+interface UserStoreStateType extends UserInfo {
     isLogin: boolean
 }
 
@@ -17,22 +18,16 @@ export const useUserStore = defineStore('user', () => {
         college: '',
         description: '',
         grade: '',
-        isLogin: Boolean(localStorage.getItem(LOGIN_INFO))
+        isLogin: false
     }
     const storageState = JSON.parse(localStorage.getItem(LOGIN_INFO) || JSON.stringify(defaultState))
     const userState = reactive<UserStoreStateType>(storageState)
 
-    function login(info: UserInfo) {
-        const { name, type, avatar, id, college, grade, description } = info
-        userState.name = name
-        userState.type = type
-        userState.avatar = avatar
-        userState.isLogin = true
-        userState.id = id
-        userState.college = college
-        userState.grade = grade
-        userState.description = description
-        localStorage.setItem(LOGIN_INFO, JSON.stringify({ name, type, avatar, id, college, grade, description }))
+    function updateState(state: Partial<UserStoreStateType>) {
+        Object.keys(state).forEach((key) => {
+            (userState as Record<string, any>)[key] = state[key as keyof UserStoreStateType]
+        })
+        localStorage.setItem(LOGIN_INFO, JSON.stringify({ ...userState, ...state, isLogin: true }))
     }
 
     function exitLogin() {
@@ -40,5 +35,17 @@ export const useUserStore = defineStore('user', () => {
         userState.isLogin = false
     }
 
-    return { ...toRefs(userState), login, exitLogin }
+    function refreshData() {
+        if (localStorage.getItem(LOGIN_INFO)) {
+            const { password, account } = JSON.parse(localStorage.getItem(LOGIN_INFO)!)
+            loginRequest({
+                account,
+                password
+            }).then(res => {
+                updateState(res.data.data)
+            })
+        }
+    }
+
+    return { ...toRefs(userState), updateState, exitLogin, refreshData }
 })
