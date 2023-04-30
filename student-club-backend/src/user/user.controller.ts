@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Query, SetMetadata } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, SetMetadata, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ApiOperation, ApiTags, ApiBody, ApiQuery } from '@nestjs/swagger';
-import type { RegisterPayloadType, LoginPayloadType } from './user.service';
+import { ApiOperation, ApiTags, ApiBody } from '@nestjs/swagger';
+import type { RegisterPayloadType, LoginPayloadType, UpdateUserInfoPayloadType } from './user.service';
 import { RegisterPayloadExample, LoginPayloadExample } from './user.example'
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('user')
 @ApiTags('用户模块')
@@ -29,8 +30,27 @@ export class UserController {
   @Get('/joinedClubs')
   @ApiOperation({ description: '获取学生用户加入的所有俱乐部' })
   @SetMetadata('successMessage', '获取成功')
-  async getAllJoinedClubs(@Query('id') userId: number) {
+  async getAllJoinedClubs(@Query('userId') userId: number) {
     const res = await this.userService.getAllJoinedClubs(userId)
     return res
   }
+
+  @Post('updateInfo')
+  @ApiOperation({ description: '更新用户信息' })
+  @SetMetadata('successMessage', '更新成功')
+  @UseInterceptors(FileInterceptor('avatar'))
+  async updateUserInfo(@UploadedFile() poster: Express.Multer.File & { url: string }, @Body() payload: Omit<UpdateUserInfoPayloadType, 'avatar'>) {
+    const { url } = poster || {}
+    const res = await this.userService.updateUserInfo({ ...payload, avatar: url })
+    return res
+  }
+
+  @Get('allManagers')
+  @ApiOperation({ description: '获取所有角色为俱乐部经理的用户' })
+  @SetMetadata('successMessage', '获取成功')
+  async getAllManagers() {
+    const res = await this.userService.getAllManagers()
+    return res
+  }
+
 }

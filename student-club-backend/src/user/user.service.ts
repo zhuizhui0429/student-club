@@ -1,5 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { User, Club } from '../entities'
+import { User } from '../entities'
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { getDataSource } from '../db'
@@ -47,8 +47,46 @@ export class UserService {
             .of(id)
             .loadMany()
     }
+
+    async updateUserInfo(data: UpdateUserInfoPayloadType) {
+        const { id, avatar, originalAvatar, ...rest } = data
+        await this.userRepository.update({
+            id
+        }, {
+            avatar: avatar || originalAvatar,
+            ...rest
+        })
+        const user = await this.userRepository.findOne({
+            where: { id }
+        })
+        return user
+    }
+
+    async getAllManagers() {
+        const userEntities = await this.userRepository.find({
+            where: {
+                type: 'manager'
+            },
+            relations: ['managerClub']
+        })
+
+        const res: GetAllManagersResType =
+            userEntities.map(({ id, name, managerClub }) => ({ id, name, managerClubName: managerClub?.clubName }))
+        return res
+    }
+
 }
 
 export type RegisterPayloadType = Pick<User, 'password' | 'account' | 'type'>
 
 export type LoginPayloadType = Omit<RegisterPayloadType, 'type'>
+
+export interface UpdateUserInfoPayloadType extends Pick<User, 'avatar' | 'college' | 'description' | 'grade' | 'name' | 'id'> {
+    originalAvatar: string
+}
+
+export type GetAllManagersResType = Array<{
+    id: number
+    name: string
+    managerClubName?: string
+}>

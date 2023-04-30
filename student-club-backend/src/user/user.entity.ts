@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn , ManyToMany } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToOne } from 'typeorm'
 import { Club } from '../entities'
 
 export type UserType = 'student' | 'manager' | 'admin'
@@ -37,4 +37,7 @@ export class User {
      */
     @ManyToMany(() => Club, club => club.members)
     joinedClubs: Club[]
+
+    @OneToOne(() => Club, club => club.manager)
+    managerClub: Club
 }

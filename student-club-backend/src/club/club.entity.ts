@@ -37,7 +37,7 @@ export class Club {
      * @type {User}
      * @memberof Club
      */
-    @OneToOne(() => User)
+    @OneToOne(() => User, user => user.managerClub)
     @JoinColumn()
     manager: User
 
