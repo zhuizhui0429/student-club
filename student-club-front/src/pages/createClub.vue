@@ -7,16 +7,16 @@ export default {
 <script setup lang="ts">
 import { RuleObject } from "ant-design-vue/es/form/interface";
 import { FormExpose } from "ant-design-vue/es/form/Form";
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import {
-  ClubPreviewType,
+  getAllManagers,
+  GetAllManagersResType,
   createClub,
   CreateClubPayload as ClubFormStateType,
 } from "@api";
 
 const formRef = ref<FormExpose>({} as any);
 const formState = reactive<ClubFormStateType>({} as any);
-
 const rules: Record<keyof ClubFormStateType, RuleObject | RuleObject[]> = {
   poster: { required: true, message: "请上传活动的海报图" },
   clubName: [
@@ -51,6 +51,13 @@ const rules: Record<keyof ClubFormStateType, RuleObject | RuleObject[]> = {
 const labelCol = { span: 4 };
 const wrapperCol = { span: 14, offset: 2 };
 
+const managerOptions = ref<GetAllManagersResType>([]);
+onMounted(() => {
+  getAllManagers().then((res) => {
+    managerOptions.value = res.data.data;
+  });
+});
+
 const handleCreateClub = () => {
   formRef.value.validateFields().then((res) => {
     createClub(res as ClubFormStateType);
@@ -84,10 +91,15 @@ const handleCreateClub = () => {
           placeholder="请选择新建俱乐部对应的经理"
         >
           <a-select-option
-            v-for="condition in [1, 2, 3]"
-            :key="condition"
-            :value="condition"
-            >{{ condition }}</a-select-option
+            v-for="manager in managerOptions"
+            :key="manager.id"
+            :value="manager.id"
+            :disabled="Boolean(manager.managerClubName)"
+            >{{
+              manager.managerClubName
+                ? `${manager.name} - ${manager.managerClubName}`
+                : manager.name
+            }}</a-select-option
           >
         </a-select>
       </a-form-item>

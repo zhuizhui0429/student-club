@@ -1,4 +1,4 @@
-import { axiosInstance, CreateClubPayload } from '@api';
+import { axiosInstance, CreateClubPayload, GetAllManagersResType, ResponseFormatter } from '@api';
 
 export function createClub(data: CreateClubPayload) {
     const { poster, ...rest } = data
@@ -10,4 +10,8 @@ export function createClub(data: CreateClubPayload) {
             'Content-Type': 'multipart/form-data'
         }
     })
+}
+
+export function getAllManagers() {
+    return axiosInstance.get<ResponseFormatter<GetAllManagersResType>>('/user/allManagers')
 }
