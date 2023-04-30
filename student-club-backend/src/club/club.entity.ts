@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany, OneToOne, JoinColumn, JoinTable } from 'typeorm'
 import { User, Activity } from '../entities'
 
 @Entity('club')
@@ -19,6 +19,7 @@ export class Club {
      * 该俱乐部的所有成员
      */
     @ManyToMany(() => User, user => user.joinedClubs)
+    @JoinTable()
     members: User[]
 
     /**
@@ -29,4 +30,15 @@ export class Club {
      */
     @OneToMany(() => Activity, activity => activity.club)
     activities: Activity[]
+
+    /**
+     *
+     *该俱乐部的经理
+     * @type {User}
+     * @memberof Club
+     */
+    @OneToOne(() => User)
+    @JoinColumn()
+    manager: User
+
 }

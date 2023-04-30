@@ -23,6 +23,9 @@ export class Activity {
     @Column({ length: 10 })
     entryCondition: entryCondition
 
+    @Column({ length: 100 })
+    date: string
+
     /**
      * 该活动所属俱乐部
      */

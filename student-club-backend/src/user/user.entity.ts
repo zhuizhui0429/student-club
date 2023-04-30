@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToMany, JoinTable } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn , ManyToMany } from 'typeorm'
 import { Club } from '../entities'
 
 export type UserType = 'student' | 'manager' | 'admin'
@@ -33,19 +33,8 @@ export class User {
     description: string
 
     /**
-     *
-     *当该用户为俱乐部经理时,其管理的俱乐部
-     * @type {Club}
-     * @memberof User
-     */
-    @OneToOne(() => Club)
-    @JoinColumn()
-    managedClub: Club
-
-    /**
      * 当该用户为学生时,其参加的所有俱乐部
      */
     @ManyToMany(() => Club, club => club.members)
-    @JoinTable()
     joinedClubs: Club[]
 }

@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, SetMetadata } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, SetMetadata } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiOperation, ApiTags, ApiBody, ApiQuery } from '@nestjs/swagger';
 import type { RegisterPayloadType, LoginPayloadType } from './user.service';
 import { RegisterPayloadExample, LoginPayloadExample } from './user.example'
 
-@Controller()
+@Controller('user')
 @ApiTags('用户模块')
 export class UserController {
   constructor(private readonly userService: UserService) { }
@@ -23,6 +23,14 @@ export class UserController {
   @ApiBody({ schema: { example: LoginPayloadExample } })
   async login(@Body() data: LoginPayloadType) {
     const res = await this.userService.login(data)
+    return res
+  }
+
+  @Get('/joinedClubs')
+  @ApiOperation({ description: '获取学生用户加入的所有俱乐部' })
+  @SetMetadata('successMessage', '获取成功')
+  async getAllJoinedClubs(@Query('id') userId: number) {
+    const res = await this.userService.getAllJoinedClubs(userId)
     return res
   }
 }
