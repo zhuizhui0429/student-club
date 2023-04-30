@@ -5,15 +5,13 @@ import { Button } from "ant-design-vue";
 import { RuleObject } from "ant-design-vue/es/form/interface";
 import { FormExpose } from "ant-design-vue/es/form/Form";
 import { useRouter } from "vue-router";
-
-export interface LoginFormState {
-  account: string;
-  password: string;
-}
+import { LoginPayload as LoginFormState, login } from "@api";
+import { useUserStore } from "@store";
 
 export default defineComponent({
   setup() {
     const router = useRouter();
+    const userStore = useUserStore();
     const formRef = ref<FormExpose>({} as any);
     const formState = reactive<LoginFormState>({
       account: "",
@@ -44,9 +42,12 @@ export default defineComponent({
       formRef.value
         .validateFields()
         .then((state) => {
-          const { account, password } = state as LoginFormState;
-          console.log("account", account);
-          console.log("password", password);
+          login(state as LoginFormState)
+            .then((res) => {
+              userStore.login(res.data.data);
+              router.push({ name: "clubSquare" });
+            })
+            .catch((err) => {});
         })
         .catch((err) => console.log("err", err));
     };

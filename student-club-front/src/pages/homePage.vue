@@ -26,7 +26,7 @@ export default defineComponent({
   setup() {
     const userStore = useUserStore();
     const router = useRouter();
-    const { type } = storeToRefs(userStore);
+    const { type, avatar, name, isLogin } = storeToRefs(userStore);
 
     const messages = ref<MessageItemType[]>([]);
     const hasViewedMessage = ref<boolean>(false);
@@ -41,7 +41,7 @@ export default defineComponent({
     });
 
     const map: Record<string, { title: string; subMenuKey?: string }> = {
-      "/clubSquare": { title: '俱乐部广场"' },
+      "/clubSquare": { title: "俱乐部广场" },
       "/personalCenter": { title: "个人中心" },
       "/publishActivity": { title: "发布活动", subMenuKey: "myClub" },
       "/manageClubMember": { title: "管理成员", subMenuKey: "myClub" },
@@ -74,6 +74,12 @@ export default defineComponent({
       router.push(key as string);
     };
 
+    const handleExit = () => {
+      userStore.exitLogin();
+      location.reload();
+    };
+
+    const navigateToLogin = () => router.push({ name: "login" });
     return {
       ...toRefs(menuState),
       handleClickMenuItem,
@@ -82,6 +88,11 @@ export default defineComponent({
       messages,
       neverReadMessageCount,
       hasViewedMessage,
+      name,
+      avatar,
+      handleExit,
+      isLogin,
+      navigateToLogin,
     };
   },
   components: {
@@ -117,7 +128,7 @@ export default defineComponent({
           </template>
           俱乐部广场
         </a-menu-item>
-        <a-menu-item key="/personalCenter">
+        <a-menu-item key="/personalCenter" v-if="type === 'student'">
           <template #icon>
             <UserOutlined />
           </template>
@@ -132,7 +143,7 @@ export default defineComponent({
           <a-menu-item key="/manageClubMember">管理成员</a-menu-item>
           <a-menu-item key="/activityHistory">历史活动</a-menu-item>
         </a-sub-menu>
-        <a-menu-item key="/createClub">
+        <a-menu-item key="/createClub" v-if="type === 'admin'">
           <template #icon>
             <UserOutlined />
           </template>
@@ -147,37 +158,49 @@ export default defineComponent({
           <span>{{ selectedMenuItemTitle }}</span>
         </div>
         <div class="right_operation">
-          <a-popover
-            overlayClassName="message_popover"
-            :mouseLeaveDelay="0.5"
-            color="#dcebe4"
-            trigger="click"
-          >
-            <template #title>我的消息</template>
-            <template #content>
-              <MyMessage :messageList="messages" />
-            </template>
-            <div class="message_tip_area">
-              <BellOutlined
-                @click="hasViewedMessage = true"
-                style="font-size: 24px"
-              />
-              <p
-                class="new_message_count"
-                v-show="neverReadMessageCount && !hasViewedMessage"
-              >
-                {{ neverReadMessageCount }}
-              </p>
-            </div>
-          </a-popover>
-          <img
-            src="https://img2.baidu.com/it/u=2421090168,324781765&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1682528400&t=73951dea4039e6f2e68d5805f96c4adf"
-            alt=""
-          />
-          <span class="account_info">学生:201905556821</span>
-          <div class="divider"></div>
-          <PoweroffOutlined style="fontsize: 16px; margin: 0px 10px" />
-          <span>推出</span>
+          <template v-if="isLogin">
+            <a-popover
+              overlayClassName="message_popover"
+              :mouseLeaveDelay="0.5"
+              color="#dcebe4"
+              trigger="click"
+            >
+              <template #title>我的消息</template>
+              <template #content>
+                <MyMessage :messageList="messages" />
+              </template>
+              <div class="message_tip_area">
+                <BellOutlined
+                  @click="hasViewedMessage = true"
+                  style="font-size: 24px"
+                />
+                <p
+                  class="new_message_count"
+                  v-show="neverReadMessageCount && !hasViewedMessage"
+                >
+                  {{ neverReadMessageCount }}
+                </p>
+              </div>
+            </a-popover>
+            <img :src="avatar" alt="" />
+            <span class="account_info">欢迎回来，{{ name }}</span>
+            <div class="divider"></div>
+            <a-popconfirm
+              title="你确定退出登录吗？"
+              ok-text="退出"
+              cancel-text="取消"
+              @confirm="handleExit"
+              placement="left"
+            >
+              <div class="exit">
+                <PoweroffOutlined style="fontsize: 16px; margin: 0px 10px" />
+                <span>退出</span>
+              </div>
+            </a-popconfirm>
+          </template>
+          <p class="un_login" @click="navigateToLogin" v-else>
+            当前暂未登录,请尽快登录
+          </p>
         </div>
       </div>
       <div class="content">
@@ -261,9 +284,15 @@ export default defineComponent({
           background-color: #d8d8d8;
           margin: 0px 20px;
         }
+        .exit {
+          cursor: pointer;
+        }
         .account_info {
           color: rgb(169, 171, 179);
           font-size: 14px;
+        }
+        .un_login {
+          cursor: pointer;
         }
       }
     }
