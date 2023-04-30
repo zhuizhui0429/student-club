@@ -11,7 +11,7 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    clubId: {
+    id: {
       type: Number,
       required: true,
     },
@@ -26,7 +26,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="club_card_container" @click="$emit('viewClubDetail', clubId)">
+  <div class="club_card_container" @click="$emit('viewClubDetail', id)">
     <img class="poster" :src="poster" alt="" />
     <span class="club_name">{{ clubName }}</span>
     <span class="desc">{{ description }}</span>

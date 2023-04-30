@@ -5,10 +5,10 @@ export default {
 </script>
 <script setup lang="ts">
 import ActivityForm from "@/components/activityForm.vue";
-import type { ActivityFormStateType } from "@api";
+import { CreateActivityPayload, createActivity } from "@api";
 
-const handlePublish = (state: ActivityFormStateType) => {
-  console.log("发布活动", state);
+const handlePublish = (state: CreateActivityPayload) => {
+  createActivity(state, 1);
 };
 </script>
 

@@ -4,13 +4,14 @@ import ClubCard from "@/components/clubCard.vue";
 import ActivityCard from "@/components/activityCard.vue";
 import Loading from "@/components/loading.vue";
 import {
-  getClubList,
-  ClubPreviewType,
-  getClubMembers,
+  getAllClubPreviewInfo,
+  Club,
+  getAllMembersOfClub,
   MemberOfClub,
-  getClubActivityOfClubs,
+  getAllActivitiesOfClub,
   ActivityOfClub,
   hasJoinClub,
+  judgeIsJoinClub,
 } from "@api";
 import {
   PoweroffOutlined,
@@ -20,7 +21,7 @@ import {
 
 export default defineComponent({
   setup() {
-    const clubList = ref<ClubPreviewType[]>([]);
+    const clubList = ref<Club[]>([]);
     const memberList = ref<MemberOfClub[]>([]);
     const activityList = ref<ActivityOfClub[]>([]);
     const clubDetailModalVisible = ref<boolean>(false);
@@ -29,8 +30,8 @@ export default defineComponent({
     const loadingClubDetail = ref<boolean>(true);
 
     onMounted(() => {
-      getClubList().then((res) => {
-        clubList.value = res;
+      getAllClubPreviewInfo().then((res) => {
+        clubList.value = res.data.data;
         loadingClubList.value = false;
       });
     });
@@ -38,14 +39,14 @@ export default defineComponent({
     const handleClickClubCard = async (id: number) => {
       clubDetailModalVisible.value = true;
       loadingClubDetail.value = true;
-      const [members, activities, joinJudge] = await Promise.all([
-        getClubMembers(),
-        getClubActivityOfClubs(),
-        hasJoinClub(id, 1),
+      const [membersData, activitiesData, joinJudgeData] = await Promise.all([
+        getAllMembersOfClub(id),
+        getAllActivitiesOfClub(id),
+        judgeIsJoinClub(id, 1),
       ]);
-      memberList.value = members;
-      activityList.value = activities;
-      hasJoined.value = joinJudge;
+      memberList.value = membersData.data.data;
+      activityList.value = activitiesData.data.data;
+      hasJoined.value = joinJudgeData.data.data;
       loadingClubDetail.value = false;
     };
 
@@ -105,14 +106,14 @@ export default defineComponent({
               <PoweroffOutlined style="font-size: 30px" />
               <div>
                 <span>成员数</span>
-                <span>999</span>
+                <span>{{ memberList.length }}</span>
               </div>
             </div>
             <div class="activity_count">
               <PoweroffOutlined style="font-size: 30px" />
               <div>
                 <span>活动数</span>
-                <span>999</span>
+                <span>{{ activityList.length }}</span>
               </div>
             </div>
           </div>

@@ -12,7 +12,7 @@ import {
 import { reactive, ref, toRefs, onMounted } from "vue";
 import type { ColumnsType } from "ant-design-vue/es/table/Table";
 import type { FilterDropdownProps } from "ant-design-vue/es/table/interface";
-import { ClubMemberTableRecordType, getAllMemberListOfClub } from "@api";
+import { MemberOfClub, getAllMembersOfClub } from "@api";
 import { RuleObject } from "ant-design-vue/es/form/interface";
 import { FormExpose } from "ant-design-vue/es/form/Form";
 
@@ -21,11 +21,22 @@ interface PrivateMessageFormState {
   content: string;
 }
 
+interface ClubMemberTableRecordType
+  extends Omit<MemberOfClub, "name" | "avatar"> {
+  member: {
+    name: string;
+    avatar: string;
+  };
+}
+
 const data = ref<ClubMemberTableRecordType[]>([]);
 const loadingData = ref<boolean>(true);
 onMounted(() => {
-  getAllMemberListOfClub(10).then((res) => {
-    data.value = res;
+  getAllMembersOfClub(1).then((res) => {
+    data.value = res.data.data.map(({ name, avatar, ...rest }) => ({
+      ...rest,
+      member: { name, avatar },
+    }));
     loadingData.value = false;
   });
 });
@@ -51,7 +62,7 @@ const columns: ColumnsType<ClubMemberTableRecordType> = [
     customFilterDropdown: true,
     width: 200,
     onFilter: (value, record) => {
-      return record.member.nickname
+      return record.member.name
         .toString()
         .toLowerCase()
         .includes((value as string).toLowerCase());
@@ -133,7 +144,7 @@ const kickedMemberInfo = reactive({
 const kickMemberModalOpen = ref<boolean>(false);
 const handleKickBtnClick = (record: ClubMemberTableRecordType) => {
   kickedMemberInfo.id = record.id;
-  kickedMemberInfo.name = record.member.nickname;
+  kickedMemberInfo.name = record.member.name;
   kickMemberModalOpen.value = true;
 };
 const handleKickMember = () => {
@@ -209,7 +220,7 @@ const handleKickMember = () => {
         <div class="member_info_container" v-if="column.key === 'member'">
           <img :src="text.avatar" alt="" />
           <template
-            v-for="(fragment, i) in text.nickname
+            v-for="(fragment, i) in text.name
               .toString()
               .split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i'))"
           >
@@ -242,7 +253,7 @@ const handleKickMember = () => {
       <template v-else>
         <div class="member_info_container" v-if="column.key === 'member'">
           <img :src="text.avatar" alt="" />
-          <span>{{ text.nickname }}</span>
+          <span>{{ text.name }}</span>
         </div>
         <div v-else-if="column.key === 'operation'" class="operation_container">
           <a-button

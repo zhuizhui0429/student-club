@@ -8,13 +8,11 @@ export default {
 import { RuleObject } from "ant-design-vue/es/form/interface";
 import { FormExpose } from "ant-design-vue/es/form/Form";
 import { reactive, ref } from "vue";
-import type { ClubPreviewType } from "@api";
-
-interface ClubFormStateType
-  extends Pick<ClubPreviewType, "clubName" | "description"> {
-  poster: File;
-  managerId: number;
-}
+import {
+  ClubPreviewType,
+  createClub,
+  CreateClubPayload as ClubFormStateType,
+} from "@api";
 
 const formRef = ref<FormExpose>({} as any);
 const formState = reactive<ClubFormStateType>({} as any);
@@ -55,7 +53,7 @@ const wrapperCol = { span: 14, offset: 2 };
 
 const handleCreateClub = () => {
   formRef.value.validateFields().then((res) => {
-    console.log("新俱乐部的信息为", res);
+    createClub(res as ClubFormStateType);
   });
 };
 </script>
@@ -86,7 +84,7 @@ const handleCreateClub = () => {
           placeholder="请选择新建俱乐部对应的经理"
         >
           <a-select-option
-            v-for="condition in ['zzx', 'zzx1', 'zzx2']"
+            v-for="condition in [1, 2, 3]"
             :key="condition"
             :value="condition"
             >{{ condition }}</a-select-option

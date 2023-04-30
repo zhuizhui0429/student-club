@@ -9,19 +9,26 @@ import type { ColumnsType } from "ant-design-vue/es/table/Table";
 import {
   ActivityTableRecordType,
   getAllActivitiesOfClub,
-  ActivityFormStateType,
+  UpdateActivityFormState,
+  updateActivity,
 } from "@api";
 import { ref, onMounted } from "vue";
 import ActivityForm from "@/components/activityForm.vue";
 
 const data = ref<ActivityTableRecordType[]>([]);
 const loadingData = ref<boolean>(true);
-onMounted(() => {
+
+const renderTable = () => {
   getAllActivitiesOfClub(1).then((res) => {
-    data.value = res;
+    data.value = res.data.data.map(({ title, poster, ...rest }) => ({
+      ...rest,
+      titlePoster: { title, poster },
+    }));
     loadingData.value = false;
   });
-});
+};
+
+onMounted(() => renderTable());
 
 const columns: ColumnsType<ActivityTableRecordType> = [
   {
@@ -69,13 +76,14 @@ const columns: ColumnsType<ActivityTableRecordType> = [
 ];
 
 const ActivityFormModalOpen = ref<boolean>(false);
-const selectedActivityState = ref<ActivityFormStateType>({} as any);
+const selectedActivityState = ref<UpdateActivityFormState>({} as any);
 const handleClickUpdateBtn = (record: ActivityTableRecordType) => {
   const {
     titlePoster: { title, poster },
     location,
     description,
     entryCondition,
+    id,
   } = record;
   selectedActivityState.value = {
     title,
@@ -83,6 +91,7 @@ const handleClickUpdateBtn = (record: ActivityTableRecordType) => {
     location,
     description,
     entryCondition,
+    id,
   };
   ActivityFormModalOpen.value = true;
   console.log("更新的活动", record);
@@ -92,8 +101,12 @@ const handleClickRsvpBtn = (activityId: number) => {
   console.log("待查看rsvp的活动id", activityId);
 };
 
-const updateActivityInfo = (newState: ActivityFormStateType) => {
-  console.log("更新活动,新的表单值为", newState);
+const updateActivityInfo = (newState: UpdateActivityFormState) => {
+  updateActivity({ ...newState, id: selectedActivityState.value.id }).then(
+    () => {
+      renderTable();
+    }
+  );
 };
 </script>
 
