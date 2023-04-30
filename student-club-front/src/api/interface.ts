@@ -30,12 +30,19 @@ export interface ActivityOfClub {
     description: string
 }
 
+export interface ActivityTableRecordType extends Omit<ActivityOfClub, 'title' | 'poster'> {
+    titlePoster: {
+        title: string
+        poster: string
+    }
+}
+
 export interface CreateActivityPayload
-    extends Omit<ActivityOfClub, "date" | "poster"> {
+    extends Omit<ActivityOfClub, "date" | "poster" | "id"> {
     poster: File;
 }
 
-export interface UpdateActivityFormState extends Omit<CreateActivityPayload, 'poster'> {
+export interface UpdateActivityFormState extends Omit<ActivityOfClub, 'poster' | "date"> {
     poster: string | File
 }
 
@@ -64,3 +71,13 @@ export interface LoginPayload {
     account: string
     password: string
 }
+
+export interface UpdateUserInfoPayload extends Pick<UserInfo, 'college' | 'description' | 'grade' | 'name' | 'id'> {
+    avatar: File | string
+}
+
+export type GetAllManagersResType = Array<{
+    id: number
+    name: string
+    managerClubName?: string
+}>

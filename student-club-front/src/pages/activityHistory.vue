@@ -7,10 +7,10 @@ export default {
 <script setup lang="ts">
 import type { ColumnsType } from "ant-design-vue/es/table/Table";
 import {
-  ActivityTableRecordType,
   getAllActivitiesOfClub,
   UpdateActivityFormState,
   updateActivity,
+  ActivityTableRecordType,
 } from "@api";
 import { ref, onMounted } from "vue";
 import ActivityForm from "@/components/activityForm.vue";
