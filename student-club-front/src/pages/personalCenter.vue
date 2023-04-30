@@ -10,12 +10,17 @@ import {
   SmileOutlined,
 } from "@ant-design/icons-vue";
 import { notification } from "ant-design-vue";
-import { getUserHasJoinedClubList, UserHasJoinedClubPreviewType } from "@api";
+import { getAllJoinedClubs, Club } from "@api";
 import EditUserInfo from "@/components/editUserInfo.vue";
+import { useUserStore } from "@store";
+import { storeToRefs } from "pinia";
 
 export default defineComponent({
   setup() {
-    const joinedClubList = ref<UserHasJoinedClubPreviewType[]>([]);
+    const userStore = useUserStore();
+    const { name, grade, college, avatar, description } =
+      storeToRefs(userStore);
+    const joinedClubList = ref<Club[]>([]);
     const modalVisible = ref<boolean>(false);
     const editFormVisible = ref<boolean>(false);
     let hasTiped = false;
@@ -35,8 +40,8 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      getUserHasJoinedClubList(1).then((res) => {
-        joinedClubList.value = res;
+      getAllJoinedClubs(userStore.id).then((res) => {
+        joinedClubList.value = res.data.data;
       });
       window.addEventListener("wheel", scollXTip);
     });
@@ -47,6 +52,11 @@ export default defineComponent({
       joinedClubList,
       modalVisible,
       editFormVisible,
+      name,
+      grade,
+      college,
+      avatar,
+      description,
     };
   },
   components: {
@@ -68,13 +78,9 @@ export default defineComponent({
         <p class="title">账号信息</p>
         <div class="content">
           <div class="top">
-            <img
-              src="https://img0.baidu.com/it/u=1993557595,4075530522&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1682614800&t=1cbe6bfaabf65fccdec346c8fc9c8fb6"
-              alt=""
-            />
+            <img :src="avatar" alt="" />
             <div class="nickname_id">
-              <p class="nickname">追追</p>
-              <p class="id">学号: 201905556821</p>
+              <p class="nickname">{{ name }}</p>
             </div>
           </div>
         </div>
@@ -111,7 +117,7 @@ export default defineComponent({
         </div>
       </a-modal>
     </div>
-    <div class="count_data">
+    <!-- <div class="count_data">
       <div class="item">
         <div class="icon_wrapper">
           <CarryOutOutlined style="font-size: 24px; color: #ffbb38" />
@@ -149,7 +155,7 @@ export default defineComponent({
           计网院
         </div>
       </div>
-    </div>
+    </div> -->
 
     <div class="edit_btn">
       <a-button type="primary" size="large" @click="editFormVisible = true"
@@ -157,7 +163,13 @@ export default defineComponent({
       >
     </div>
     <a-modal title="更新个人信息" :footer="null" v-model:open="editFormVisible">
-      <EditUserInfo />
+      <EditUserInfo
+        :initialAvatar="avatar"
+        :college="college"
+        :nickname="name"
+        :grade="grade"
+        :personalProfile="description"
+      />
     </a-modal>
   </div>
 </template>

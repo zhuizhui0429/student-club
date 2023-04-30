@@ -4,12 +4,15 @@ import { RuleObject } from "ant-design-vue/es/form/interface";
 import { FormExpose } from "ant-design-vue/es/form/Form";
 import { colleges, grades } from "@const";
 import AvatarUpload from "@comp/avatarUpload.vue";
+import { updateInfo } from "@api";
+import { useUserStore } from "@store";
+import { storeToRefs } from "pinia";
 
 interface UserInfoFormState {
   nickname: string;
-  college: (typeof colleges)[number];
-  avatar?: File;
-  grade: (typeof grades)[number];
+  college: string;
+  avatar: File;
+  grade: string;
   personalProfile: string;
 }
 
@@ -37,17 +40,31 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { nickname, college, grade, personalProfile } = props;
+    const userStore = useUserStore();
+    const { id } = storeToRefs(userStore);
+    const { nickname, college, grade, personalProfile, initialAvatar } = props;
     const formRef = ref<FormExpose>({} as any);
     const formState = reactive<UserInfoFormState>({
       nickname,
-      college: college as (typeof colleges)[number],
-      avatar: undefined,
-      grade: grade as (typeof grades)[number],
+      college: college,
+      grade: grade,
       personalProfile,
+      avatar: undefined as any,
     });
 
     const rules: Partial<Record<keyof UserInfoFormState, RuleObject[]>> = {
+      avatar: [
+        ...[
+          ...(initialAvatar
+            ? []
+            : ([
+                {
+                  required: true,
+                  message: "你还未选择过自己的头像,请上传头像",
+                },
+              ] as RuleObject[])),
+        ],
+      ],
       nickname: [
         {
           min: 2,
@@ -55,34 +72,22 @@ export default defineComponent({
           message: "昵称的长度需要在2~10之间",
           trigger: "blur",
         },
-        ...(nickname
-          ? []
-          : ([
-              {
-                required: true,
-                message: "你还未填写过自己的昵称,请填写",
-              },
-            ] as RuleObject[])),
+        {
+          required: true,
+          message: "你还未填写过自己的昵称,请填写",
+        },
       ],
       college: [
-        ...(college
-          ? []
-          : ([
-              {
-                required: true,
-                message: "你还未选择过自己的学院信息,请选择学院",
-              },
-            ] as RuleObject[])),
+        {
+          required: true,
+          message: "你还未选择过自己的学院信息,请选择学院",
+        },
       ],
       grade: [
-        ...(grade
-          ? []
-          : ([
-              {
-                required: true,
-                message: "你还未选择过自己的年级信息,请选择年级",
-              },
-            ] as RuleObject[])),
+        {
+          required: true,
+          message: "你还未选择过自己的年级信息,请选择年级",
+        },
       ],
       personalProfile: [
         {
@@ -98,7 +103,29 @@ export default defineComponent({
       formRef.value
         .validateFields()
         .then((res) => {
-          console.log("res", res);
+          const {
+            avatar,
+            nickname: name,
+            grade,
+            college,
+            personalProfile: description,
+          } = res as UserInfoFormState;
+          updateInfo({
+            avatar,
+            name,
+            grade,
+            college,
+            description,
+            id: id.value,
+          }).then((res) => {
+            userStore.updateState({
+              avatar: res.data.data.avatar,
+              name,
+              grade,
+              college,
+              description,
+            });
+          });
         })
         .catch((err) => {
           console.log("err", err);
@@ -132,7 +159,10 @@ export default defineComponent({
       :wrapperCol="wrapperCol"
     >
       <a-form-item label="头像" name="avatar">
-        <AvatarUpload v-model:avatarFile="formState.avatar" />
+        <AvatarUpload
+          v-model:avatarFile="formState.avatar"
+          :initialAvatar="initialAvatar"
+        />
       </a-form-item>
       <a-form-item label="昵称" name="nickname">
         <a-input
