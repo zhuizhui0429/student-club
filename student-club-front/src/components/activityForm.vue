@@ -7,31 +7,42 @@ export default {
 import EditUserInfo from "@/components/editUserInfo.vue";
 import { RuleObject } from "ant-design-vue/es/form/interface";
 import { FormExpose } from "ant-design-vue/es/form/Form";
-import { reactive, ref } from "vue";
+import { reactive, ref, watch } from "vue";
 import AvatarUpload from "@comp/avatarUpload.vue";
 import { entryConditions } from "@const";
-import type { ActivityFormStateType } from "@api";
+import type { CreateActivityPayload } from "@api";
 
 export interface ActivityFormPropsType {
   type: "publish" | "update";
-  initialValue?: ActivityFormStateType;
+  initialValue?: CreateActivityPayload;
 }
 
 const emit = defineEmits<{
-  (e: "submit", formState: ActivityFormStateType): void;
+  (e: "submit", formState: CreateActivityPayload): void;
 }>();
 const props = withDefaults(defineProps<ActivityFormPropsType>(), {
   type: "publish",
 });
 
 const formRef = ref<FormExpose>({} as any);
-const formState = reactive<ActivityFormStateType>(
-  props.initialValue ? props.initialValue : ({} as ActivityFormStateType)
+const formState = reactive<CreateActivityPayload>(
+  props.initialValue ? props.initialValue : ({} as CreateActivityPayload)
 );
+watch(
+  () => props.initialValue,
+  (newValue) => {
+    const compose = { ...formState, ...newValue! };
+    Object.keys(compose).forEach((key) => {
+      (formState as Record<string, any>)[key] =
+        compose[key as keyof CreateActivityPayload];
+    });
+  }
+);
+
 const labelCol = { span: 4 };
 const wrapperCol = { span: 14, offset: 2 };
 
-const rules: Record<keyof ActivityFormStateType, RuleObject | RuleObject[]> = {
+const rules: Record<keyof CreateActivityPayload, RuleObject | RuleObject[]> = {
   poster: { required: true, message: "请上传活动的海报图" },
   title: [
     {
@@ -71,7 +82,7 @@ const handlePublishActivity = () => {
   formRef.value
     .validateFields()
     .then((res) => {
-      emit("submit", res as ActivityFormStateType);
+      emit("submit", res as CreateActivityPayload);
     })
     .catch((err) => console.log("err", err));
 };
