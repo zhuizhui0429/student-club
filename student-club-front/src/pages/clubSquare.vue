@@ -20,6 +20,7 @@ import {
 } from "@ant-design/icons-vue";
 import { useUserStore } from "@store";
 import { storeToRefs } from "pinia";
+import SendMessageModal from "@/components/sendMessageModal.vue";
 
 export default defineComponent({
   setup() {
@@ -32,7 +33,7 @@ export default defineComponent({
     const hasJoined = ref<boolean>(false);
     const loadingClubList = ref<boolean>(true);
     const loadingClubDetail = ref<boolean>(true);
-    let clickedClubManagerId: number = 0;
+    let clickedClubManagerId = ref<number>(0);
 
     onMounted(() => {
       getAllClubPreviewInfo().then((res) => {
@@ -42,7 +43,7 @@ export default defineComponent({
     });
 
     const handleClickClubCard = async (id: number, managerId: number) => {
-      clickedClubManagerId = managerId;
+      clickedClubManagerId.value = managerId;
       clubDetailModalVisible.value = true;
       loadingClubDetail.value = true;
       const [membersData, activitiesData, joinJudgeData] = await Promise.all([
@@ -56,19 +57,7 @@ export default defineComponent({
       loadingClubDetail.value = false;
     };
 
-    const applyJoinClub = () => {
-      const { avatar, id, name } = userStore;
-      sendMessage({
-        senderAvatar: avatar,
-        senderId: id,
-        senderName: name,
-        type: "joinClubApplication",
-        targetId: clickedClubManagerId,
-        title: "加入俱乐部申请",
-        content: "我想加入俱乐部",
-      });
-    };
-
+    const sendMessageModalOpen = ref<boolean>(false);
     return {
       clubList,
       handleClickClubCard,
@@ -78,9 +67,10 @@ export default defineComponent({
       hasJoined,
       loadingClubList,
       loadingClubDetail,
-      applyJoinClub,
       isLogin,
       type,
+      sendMessageModalOpen,
+      clickedClubManagerId,
     };
   },
   components: {
@@ -90,6 +80,7 @@ export default defineComponent({
     ClubCard,
     ActivityCard,
     Loading,
+    SendMessageModal,
   },
 });
 </script>
@@ -108,6 +99,11 @@ export default defineComponent({
       size="large"
       :loading="loadingClubList"
       initialHeight="calc(100vh - 180px)"
+    />
+    <SendMessageModal
+      type="joinClubApplication"
+      :targetId="clickedClubManagerId"
+      :open="sendMessageModalOpen"
     />
     <a-modal
       title="足球俱乐部"
@@ -178,7 +174,7 @@ export default defineComponent({
         v-if="isLogin && type === 'student'"
       >
         <a-button
-          @click="applyJoinClub"
+          @click="sendMessageModalOpen = true"
           v-if="!hasJoined"
           type="primary"
           size="large"
