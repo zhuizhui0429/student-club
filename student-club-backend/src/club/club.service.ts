@@ -18,7 +18,6 @@ export class ClubService {
     async createClub(payload: CreateClubPayloadType) {
         const { managerId, ...clubInfo } = payload
         const clubEntity = await this.clubRepository.save(clubInfo)
-        console.log('this.dataSource', this.dataSource)
         await this.dataSource.createQueryBuilder()
             .relation(Club, 'manager')
             .of(clubEntity)
@@ -52,7 +51,7 @@ export class ClubService {
         return members
     }
 
-    async getActivitiesByClubId(id:number){
+    async getActivitiesByClubId(id: number) {
         const res: Activity[] = await this.dataSource.createQueryBuilder()
             .relation(Club, 'activities')
             .of(id)
@@ -104,7 +103,6 @@ export class ClubService {
                 type: 'joinClubApproval',
                 title: '同意了你的入部申请',
                 content: `欢迎加入${clubEntity.clubName}大家提`,
-                targetId: applicantId,
                 createTime: new Date()
             }),
             this.messageRepository.update({
@@ -113,6 +111,7 @@ export class ClubService {
                 handleStatus: 'approved'
             })
         ])
+        await this.dataSource.createQueryBuilder().relation(Message, 'targetUser').of(messageEntity).set(applicantId)
         return messageEntity
     }
 
@@ -123,7 +122,7 @@ export class ClubService {
                 id: managerId
             }
         })
-        await Promise.all([
+        const [, messageEntity] = await Promise.all([
             this.messageRepository.update({
                 id: applicantMessageId,
             }, {
@@ -139,6 +138,7 @@ export class ClubService {
                 type: 'joinClubRefuse'
             })
         ])
+        await this.dataSource.createQueryBuilder().relation(Message, 'targetUser').of(messageEntity).set(applicantId)
     }
 }
 

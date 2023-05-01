@@ -22,6 +22,7 @@ export class MessageService {
       .where('message.type = :type', { type })
       .andWhere('message.senderId = :senderId', { senderId })
       .andWhere('message.targetUserId = :targetId', { targetId })
+      .andWhere(`message.handleStatus = :status`, { status: 'pending' })
       .getOne()
 
     if (hasMessageUnhandled) {
