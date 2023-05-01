@@ -14,12 +14,14 @@ import {
 } from "@api";
 import { ref, onMounted } from "vue";
 import ActivityForm from "@/components/activityForm.vue";
+import { useUserStore } from "@store";
 
 const data = ref<ActivityTableRecordType[]>([]);
 const loadingData = ref<boolean>(true);
+const userStore = useUserStore();
 
 const renderTable = () => {
-  getAllActivitiesOfClub(1).then((res) => {
+  getAllActivitiesOfClub(userStore.id).then((res) => {
     data.value = res.data.data.map(({ title, poster, ...rest }) => ({
       ...rest,
       titlePoster: { title, poster },

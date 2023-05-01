@@ -26,7 +26,7 @@ export type role = 'student' | 'manager' | 'admin'
 declare module 'vue-router' {
     interface RouteMeta {
         requiresAuth: boolean
-        role?: role
+        role?: role | role[]
     }
 }
 let userStore: ReturnType<typeof useUserStore> = null as any
@@ -58,7 +58,7 @@ const routes: RouterOptions['routes'] = [
                 component: personalCenter,
                 meta: {
                     requiresAuth: true,
-                    role: 'student'
+                    role: ['student', 'manager']
                 }
             },
             {
@@ -121,7 +121,7 @@ export const router = createRouter({
 
 router.beforeEach(async (to) => {
     progress.start()
-    await pause(getRandomNum(500, 1000))
+    await pause(getRandomNum(100, 200))
     const { type, isLogin } = getUserStore()
     const { role, requiresAuth } = to.meta
     if (!requiresAuth) {
@@ -129,11 +129,19 @@ router.beforeEach(async (to) => {
         return true
     }
     else if (requiresAuth && !isLogin) {
-
         return { name: 'login' }
     }
-    else if (requiresAuth && isLogin && (type !== role)) {
-        return { name: 'clubSquare' }
+    else if (requiresAuth && isLogin) {
+        if (role && Array.isArray(role)) {
+            if (role.includes(type)) {
+                return true
+            }
+            else return false
+        }
+        if (role && type !== role) {
+            return false
+        }
+        return true
     }
     return true
 })

@@ -14,6 +14,7 @@ import {
   createClub,
   CreateClubPayload as ClubFormStateType,
 } from "@api";
+import AvatarUpload from "@/components/avatarUpload.vue";
 
 const formRef = ref<FormExpose>({} as any);
 const formState = reactive<ClubFormStateType>({} as any);

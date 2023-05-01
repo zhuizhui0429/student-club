@@ -9,6 +9,7 @@ import {
   MessageResType as MessageItemType,
   sendMessage,
   approveJoin,
+  refuseJoin,
   HandleStatus,
 } from "@api";
 import { useUserStore } from "@store";
@@ -27,21 +28,22 @@ defineProps<MyMessagePropsType>();
 const userStore = useUserStore();
 const { id, name, avatar } = storeToRefs(userStore);
 const handleReject = (message: MessageItemType) => {
-  const { senderId: targetId } = message;
-  sendMessage({
-    senderAvatar: avatar.value,
-    senderId: id.value,
-    senderName: name.value,
-    targetId,
-    title: "拒绝了你的入部申请",
-    content: "萨达",
-    type: "joinClubRefuse",
+  const { senderId: applicantId, id: applicantMessageId } = message;
+  refuseJoin({
+    applicantId,
+    applicantMessageId: applicantMessageId!,
+    managerId: id.value,
+    reason: "",
   });
 };
 
 const handleApproval = (message: MessageItemType) => {
   const { senderId: applicantId, id: applicantMessageId } = message;
-  approveJoin(applicantId, id.value, applicantMessageId!);
+  approveJoin({
+    applicantId,
+    applicantMessageId: applicantMessageId!,
+    managerId: id.value,
+  });
 };
 </script>
 

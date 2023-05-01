@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, toRefs, watch } from "vue";
+import { defineComponent, ref, toRefs } from "vue";
 import { UploadOutlined } from "@ant-design/icons-vue";
 import { defaultAvatar } from "@/constant";
 
@@ -21,9 +21,6 @@ export default defineComponent({
   setup(props, { emit }) {
     const { initialAvatar } = toRefs(props);
     const selectedAvatar = ref<string>(initialAvatar.value);
-    watch(initialAvatar, () => {
-      selectedAvatar.value = initialAvatar.value;
-    });
 
     const beforeUpload = async (file: File) => {
       const temptUrl = await getBase64(file);

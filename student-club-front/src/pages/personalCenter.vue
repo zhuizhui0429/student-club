@@ -83,11 +83,47 @@ export default defineComponent({
               <p class="nickname">{{ name }}</p>
             </div>
           </div>
+          <div class="bottom">
+            <div class="item">
+              <div class="icon_wrapper">
+                <CarryOutOutlined style="font-size: 14px; color: #ffbb38" />
+              </div>
+              <div class="right">
+                <p class="name">我的年级</p>
+                {{ grade || "暂未填写" }}
+              </div>
+            </div>
+            <div class="item">
+              <div class="icon_wrapper">
+                <TeamOutlined style="font-size: 14px; color: #396aff" />
+              </div>
+              <div class="right">
+                <p class="name">我的学院</p>
+                {{ college || "暂未填写" }}
+              </div>
+            </div>
+            <div class="item">
+              <div class="icon_wrapper">
+                <AliwangwangOutlined style="font-size: 14px; color: #4c78ff" />
+              </div>
+              <div class="right">
+                <p class="name">已加入的俱乐部数</p>
+                {{ joinedClubList.length }}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="joined_club">
         <p class="title">已加入的俱乐部</p>
         <div class="club_list">
+          <div class="empty_list">
+            <a-empty
+              v-if="!joinedClubList.length"
+              description="暂未加入任何俱乐部"
+            />
+          </div>
+
           <div
             class="club_item"
             v-for="club in joinedClubList"
@@ -117,46 +153,6 @@ export default defineComponent({
         </div>
       </a-modal>
     </div>
-    <!-- <div class="count_data">
-      <div class="item">
-        <div class="icon_wrapper">
-          <CarryOutOutlined style="font-size: 24px; color: #ffbb38" />
-        </div>
-        <div class="right">
-          <p class="name">我的年级</p>
-          大三
-        </div>
-      </div>
-      <div class="item">
-        <div class="icon_wrapper">
-          <TeamOutlined style="font-size: 24px; color: #396aff" />
-        </div>
-        <div class="right">
-          <p class="name">我的学院</p>
-          计网院
-        </div>
-      </div>
-      <div class="item">
-        <div class="icon_wrapper">
-          <AliwangwangOutlined style="font-size: 24px; color: #4c78ff" />
-        </div>
-        <div class="right">
-          <p class="name">已加入的俱乐部数</p>
-          6
-        </div>
-      </div>
-      <div class="item">
-        <div class="icon_wrapper">
-          <PoweroffOutlined style="font-size: 24px; color: #ff82ac" />
-        </div>
-
-        <div class="right">
-          <p class="name">我的学院</p>
-          计网院
-        </div>
-      </div>
-    </div> -->
-
     <div class="edit_btn">
       <a-button type="primary" size="large" @click="editFormVisible = true"
         >编辑个人信息</a-button
@@ -178,11 +174,12 @@ export default defineComponent({
 .personal_center_container {
   min-height: calc(100vh - 180px);
   position: relative;
-  .count_data {
+  .bottom {
     display: flex;
     justify-content: space-between;
+    margin-top: 20px;
     .item {
-      width: 260px;
+      width: 120px;
       height: 120px;
       background-color: white;
       border-radius: 10px;
@@ -190,8 +187,8 @@ export default defineComponent({
       align-items: center;
       justify-content: center;
       .icon_wrapper {
-        width: 70px;
-        height: 70px;
+        width: 30px;
+        height: 30px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -217,8 +214,8 @@ export default defineComponent({
     .item:nth-child(3) .icon_wrapper {
       background-color: lightpink;
     }
-    .item:nth-child(4) .icon_wrapper {
-      background-color: lightsteelblue;
+    .item:nth-child(3) {
+      width: 200px;
     }
   }
   .info {
@@ -235,15 +232,15 @@ export default defineComponent({
     }
     .account_info {
       margin-right: 60px;
-      width: 350px;
+      width: 500px;
       flex: 0 0 auto;
+
       .content {
         height: 260px;
         border-radius: 10px;
         background-color: #e7edff;
         box-sizing: border-box;
-        padding-top: 20px;
-        padding-left: 10px;
+        padding: 10px;
         .top {
           display: flex;
           height: 100;
@@ -279,6 +276,10 @@ export default defineComponent({
         padding: 0px 30px;
         border: 2px solid lightslategrey;
         max-width: 700px;
+        .empty_list {
+          width: 100%;
+          margin: auto;
+        }
         .club_item {
           height: 200px;
           flex: 0 0 140px;

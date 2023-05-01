@@ -28,6 +28,7 @@ export const useUserStore = defineStore('user', () => {
             (userState as Record<string, any>)[key] = state[key as keyof UserStoreStateType]
         })
         localStorage.setItem(LOGIN_INFO, JSON.stringify({ ...userState, ...state, isLogin: true }))
+        userState.name = userState.name || '未命名用户'
     }
 
     function exitLogin() {

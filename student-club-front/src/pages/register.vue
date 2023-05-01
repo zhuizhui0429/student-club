@@ -2,12 +2,11 @@
 import { defineComponent, reactive, ref } from "vue";
 import { RuleObject } from "ant-design-vue/es/form/interface";
 import { FormExpose } from "ant-design-vue/es/form/Form";
-import type { LoginFormState } from "./login.vue";
+import { register, RegisterPayload } from "@api";
 import { useRouter } from "vue-router";
 import { pause } from "@api";
 
-interface RegisterFormState extends LoginFormState {
-  type: "student" | "manager" | "";
+interface RegisterFormState extends RegisterPayload {
   password2: string;
 }
 const passwordReg = /^([a-zA-Z]+[0-9]+)|([0-9]+[a-zA-Z]+)$/;
@@ -15,12 +14,7 @@ const passwordReg = /^([a-zA-Z]+[0-9]+)|([0-9]+[a-zA-Z]+)$/;
 export default defineComponent({
   setup() {
     const formRef = ref<FormExpose>({} as any);
-    const formState = reactive<RegisterFormState>({
-      account: "",
-      password: "",
-      type: "",
-      password2: "",
-    });
+    const formState = reactive<RegisterFormState>({} as any);
 
     const validatePassword = async function (
       _rule: RuleObject,
@@ -77,14 +71,16 @@ export default defineComponent({
 
     const router = useRouter();
     const isRegistering = ref<boolean>(false);
-    const register = () => {
+    const handleRegister = () => {
       formRef.value.validateFields().then(
         async (res) => {
           isRegistering.value = true;
           const { account, password, type } = res as RegisterFormState;
-          console.log(account, password, type);
-          await pause(1500);
-          isRegistering.value = false;
+          await register({
+            account,
+            password,
+            type,
+          });
           router.push("/login");
         },
         (err) => {
@@ -99,7 +95,7 @@ export default defineComponent({
       formRef,
       formState,
       rules,
-      register,
+      handleRegister,
       reset,
       isRegistering,
       labelCol: { span: 6 },
@@ -152,7 +148,7 @@ export default defineComponent({
             <a-button
               size="large"
               type="primary"
-              @click="register"
+              @click="handleRegister"
               :loading="isRegistering"
               >注册</a-button
             >

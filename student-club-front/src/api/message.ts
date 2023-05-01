@@ -1,5 +1,3 @@
-import { pause, getRandomNum } from './'
-
 export interface MessageItemType {
     avatar: string
     clubName: string
@@ -8,6 +6,16 @@ export interface MessageItemType {
     content: string
     hasRead: boolean
     id: number
+}
+
+export function pause(time: number) {
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(true), time)
+    })
+}
+
+export function getRandomNum(min: number, max: number) {
+    return min + Math.floor(Math.random() * (max - min))
 }
 
 export async function getAllMessage(userId: number): Promise<MessageItemType[]> {

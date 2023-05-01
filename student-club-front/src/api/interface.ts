@@ -76,6 +76,10 @@ export interface LoginPayload {
     password: string
 }
 
+export interface RegisterPayload extends LoginPayload {
+    type: role
+}
+
 export interface UpdateUserInfoPayload extends Pick<UserInfo, 'college' | 'description' | 'grade' | 'name' | 'id'> {
     avatar: File | string
 }
@@ -86,7 +90,7 @@ export type GetAllManagersResType = Array<{
     managerClubName?: string
 }>
 
-export type MessageType = 'joinClubApplication' | 'exitClubTip' | 'joinClubApproval' | 'joinClubRefuse'
+export type MessageType = 'joinClubApplication' | 'exitClubTip' | 'joinClubApproval' | 'joinClubRefuse' | 'private'
 export type HandleStatus = 'approved' | 'refused' | 'pending' | 'none'
 export interface Message {
     id?: number
@@ -105,4 +109,14 @@ export interface MessageResType extends Message {
 
 export interface SendMessagePayload extends Message {
     targetId: number
+}
+
+export interface ApproveJoinClubMessagePayload {
+    applicantId: number
+    managerId: number
+    applicantMessageId: number
+}
+
+export interface RefuseJoinClubMessagePayload extends ApproveJoinClubMessagePayload {
+    reason: string
 }

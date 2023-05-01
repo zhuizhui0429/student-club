@@ -6,9 +6,12 @@ export default {
 <script setup lang="ts">
 import ActivityForm from "@/components/activityForm.vue";
 import { CreateActivityPayload, createActivity } from "@api";
+import { useUserStore } from "@store";
+
+const userStore = useUserStore();
 
 const handlePublish = (state: CreateActivityPayload) => {
-  createActivity(state, 1);
+  createActivity(state, userStore.id);
 };
 </script>
 

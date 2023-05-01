@@ -1,4 +1,4 @@
-import type { LoginPayload, ResponseFormatter, UserInfo, SendMessagePayload, MessageResType, ClubPreviewType } from './interface'
+import type { LoginPayload, RegisterPayload, ResponseFormatter, UserInfo, SendMessagePayload, MessageResType, ClubPreviewType } from './interface'
 import axios from 'axios'
 import { needTipRequest } from './const'
 import { message } from 'ant-design-vue'
@@ -17,7 +17,7 @@ axiosInstance.interceptors.response.use((res) => {
     return res
 }, err => {
     const errorMessage = err.response.data.message
-    message.error(errorMessage, 2)
+    message.error(errorMessage, 2.5)
 })
 
 export * from './interface'
@@ -28,6 +28,12 @@ export * from './student'
 
 export function login(payload: LoginPayload) {
     return axiosInstance.post<ResponseFormatter<UserInfo>>('/user/login', {
+        ...payload
+    })
+}
+
+export function register(payload: RegisterPayload) {
+    return axiosInstance.post<ResponseFormatter<UserInfo>>('/user/register', {
         ...payload
     })
 }

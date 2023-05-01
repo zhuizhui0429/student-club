@@ -15,11 +15,8 @@ import type { FilterDropdownProps } from "ant-design-vue/es/table/interface";
 import { MemberOfClub, getAllMembersOfClub } from "@api";
 import { RuleObject } from "ant-design-vue/es/form/interface";
 import { FormExpose } from "ant-design-vue/es/form/Form";
-
-interface PrivateMessageFormState {
-  title: string;
-  content: string;
-}
+import SendMessageModal from "@/components/sendMessageModal.vue";
+import { useUserStore } from "@store";
 
 interface ClubMemberTableRecordType
   extends Omit<MemberOfClub, "name" | "avatar"> {
@@ -31,8 +28,9 @@ interface ClubMemberTableRecordType
 
 const data = ref<ClubMemberTableRecordType[]>([]);
 const loadingData = ref<boolean>(true);
+const userStore = useUserStore();
 onMounted(() => {
-  getAllMembersOfClub(1).then((res) => {
+  getAllMembersOfClub(userStore.id).then((res) => {
     data.value = res.data.data.map(({ name, avatar, ...rest }) => ({
       ...rest,
       member: { name, avatar },
@@ -118,24 +116,6 @@ const { searchedColumn, searchText } = toRefs(state);
 const sendPrivateMessageModalOpen = ref<boolean>(false);
 const formRef = ref<FormExpose>({} as any);
 const sendedMessageMemberId = ref<number>(0);
-const formState = reactive<PrivateMessageFormState>({
-  title: "",
-  content: "",
-});
-const rules: Record<keyof PrivateMessageFormState, RuleObject> = {
-  title: { required: true, message: "请输入私发消息的标题" },
-
-  content: { required: true, message: "请输入私发消息的内容" },
-};
-const handleSendMessage = () => {
-  formRef.value.validateFields().then(
-    (res) => {
-      console.log("发送消息", res);
-      console.log("接受者id", sendedMessageMemberId.value);
-    },
-    (err) => console.log("err", err)
-  );
-};
 
 const kickedMemberInfo = reactive({
   name: "",
@@ -153,6 +133,12 @@ const handleKickMember = () => {
   setTimeout(() => {
     kickMemberModalOpen.value = false;
   }, 300);
+};
+
+const privateSendMessageTargetId = ref<number>(0);
+const handlePrivateSendMessage = (targetId: number) => {
+  sendPrivateMessageModalOpen.value = true;
+  privateSendMessageTargetId.value = targetId;
 };
 </script>
 
@@ -257,10 +243,7 @@ const handleKickMember = () => {
         </div>
         <div v-else-if="column.key === 'operation'" class="operation_container">
           <a-button
-            @click="
-              (sendPrivateMessageModalOpen = true) &&
-                (sendedMessageMemberId = record.id)
-            "
+            @click="handlePrivateSendMessage(record.id)"
             style="margin-right: 10px"
             type="primary"
             >私发更新</a-button
@@ -273,33 +256,12 @@ const handleKickMember = () => {
       </template>
     </template>
   </a-table>
-  <a-modal
-    title="私发成员更新"
-    v-model:open="sendPrivateMessageModalOpen"
-    :footer="null"
-  >
-    <a-form
-      :rules="rules"
-      :model="formState"
-      ref="formRef"
-      :labelCol="{ span: 4 }"
-    >
-      <a-form-item label="昵称" name="title">
-        <a-input v-model:value="formState.title" placeholder="请输入消息标题" />
-      </a-form-item>
-      <a-form-item label="个人简介" name="content">
-        <a-textarea
-          v-model:value="formState.content"
-          placeholder="请输入消息内容"
-          :rows="3"
-          style="resize: none"
-        />
-      </a-form-item>
-      <a-form-item :wrapperCol="{ offset: 10 }">
-        <a-button type="primary" @click="handleSendMessage">发送消息</a-button>
-      </a-form-item>
-    </a-form>
-  </a-modal>
+  <SendMessageModal
+    :targetId="privateSendMessageTargetId"
+    :open="sendPrivateMessageModalOpen"
+    type="private"
+    @onModalClose="sendPrivateMessageModalOpen = false"
+  />
   <a-modal
     v-model:open="kickMemberModalOpen"
     :title="`你确定要将成员${kickedMemberInfo.name}踢出俱乐部吗?`"

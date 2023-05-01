@@ -140,7 +140,10 @@ export default defineComponent({
           </template>
           俱乐部广场
         </a-menu-item>
-        <a-menu-item key="/personalCenter" v-if="type === 'student'">
+        <a-menu-item
+          key="/personalCenter"
+          v-if="['student', 'manager'].includes(type)"
+        >
           <template #icon>
             <UserOutlined />
           </template>

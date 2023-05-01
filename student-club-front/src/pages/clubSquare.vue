@@ -6,12 +6,11 @@ import Loading from "@/components/loading.vue";
 import {
   getAllClubPreviewInfo,
   ClubPreviewType,
-  getAllMembersOfClub,
+  getAllMembersByClubId,
+  getAllActivitiesByClubId,
   MemberOfClub,
-  getAllActivitiesOfClub,
   ActivityOfClub,
   judgeIsJoinClub,
-  sendMessage,
 } from "@api";
 import {
   PoweroffOutlined,
@@ -47,8 +46,8 @@ export default defineComponent({
       clubDetailModalVisible.value = true;
       loadingClubDetail.value = true;
       const [membersData, activitiesData, joinJudgeData] = await Promise.all([
-        getAllMembersOfClub(id),
-        getAllActivitiesOfClub(id),
+        getAllMembersByClubId(id),
+        getAllActivitiesByClubId(id),
         judgeIsJoinClub(userStore.id, id),
       ]);
       memberList.value = membersData.data.data;
@@ -58,6 +57,10 @@ export default defineComponent({
     };
 
     const sendMessageModalOpen = ref<boolean>(false);
+    const onclose = () => {
+      console.log("close");
+      sendMessageModalOpen.value = false;
+    };
     return {
       clubList,
       handleClickClubCard,
@@ -71,6 +74,7 @@ export default defineComponent({
       type,
       sendMessageModalOpen,
       clickedClubManagerId,
+      onclose,
     };
   },
   components: {
@@ -95,6 +99,12 @@ export default defineComponent({
         v-bind="club"
       />
     </div>
+    <div class="empty_club_list">
+      <a-empty
+        v-if="!clubList.length"
+        description="暂无任何俱乐部,请联系管理员创建"
+      />
+    </div>
     <Loading
       size="large"
       :loading="loadingClubList"
@@ -104,6 +114,7 @@ export default defineComponent({
       type="joinClubApplication"
       :targetId="clickedClubManagerId"
       :open="sendMessageModalOpen"
+      @onModalClose="sendMessageModalOpen = false"
     />
     <a-modal
       title="足球俱乐部"
@@ -152,7 +163,7 @@ export default defineComponent({
                     }}</span>
                   </div>
                 </div>
-                <span class="right"> {{ member.joinDays }}天前加入 </span>
+                <!-- <span class="right"> {{ member.joinDays }}天前加入 </span> -->
               </div>
             </div>
           </div>
@@ -324,5 +335,12 @@ export default defineComponent({
       margin-left: 8px;
     }
   }
+}
+.empty_club_list {
+  width: 100%;
+  height: calc(100vh - 180px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

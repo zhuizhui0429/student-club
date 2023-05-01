@@ -13,6 +13,7 @@ declare module '@vue/runtime-core' {
     ACard: typeof import('ant-design-vue/es')['Card']
     ActivityCard: typeof import('./src/components/activityCard.vue')['default']
     ActivityForm: typeof import('./src/components/activityForm.vue')['default']
+    AEmpty: typeof import('ant-design-vue/es')['Empty']
     AForm: typeof import('ant-design-vue/es')['Form']
     AFormItem: typeof import('ant-design-vue/es')['FormItem']
     AImage: typeof import('ant-design-vue/es')['Image']
@@ -40,5 +41,6 @@ declare module '@vue/runtime-core' {
     MyMessage: typeof import('./src/components/myMessage.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SendMessageModal: typeof import('./src/components/sendMessageModal.vue')['default']
   }
 }

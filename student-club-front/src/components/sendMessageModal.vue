@@ -17,6 +17,10 @@ interface SendMessageFormState {
   content: string;
 }
 
+defineEmits<{
+  onModalClose: void;
+}>();
+
 const props = defineProps<{
   type: MessageType;
   targetId: number;
@@ -34,6 +38,7 @@ watch(open, () => {
 const titleMap: Partial<Record<MessageType, string>> = {
   joinClubApplication: "申请加入俱乐部",
   joinClubRefuse: "拒绝了你的入部申请",
+  private: "私发更新消息",
 };
 
 const formRef = ref<FormExpose>({} as any);
@@ -56,6 +61,7 @@ const rules: Record<keyof SendMessageFormState, RuleObject> = {
 };
 
 const userStore = useUserStore();
+
 const handleSendMessage = () => {
   formRef.value
     .validateFields()
@@ -79,12 +85,17 @@ const handleSendMessage = () => {
       },
       (err) => console.log("err", err)
     )
-    .finally(() => (modalVisible.value = false));
+    .finally(() => (open.value = false));
 };
 </script>
 
 <template>
-  <a-modal :title="titleMap[type]" v-model:open="modalVisible" :footer="null">
+  <a-modal
+    :title="titleMap[type]"
+    v-model:open="modalVisible"
+    :footer="null"
+    @cancel="$emit('onModalClose')"
+  >
     <a-form
       :rules="rules"
       :model="formState"
