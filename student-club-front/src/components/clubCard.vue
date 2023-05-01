@@ -19,6 +19,9 @@ export default defineComponent({
       type: String,
       default: "这是一段关于俱乐部的简短描述",
     },
+    managerId: {
+      type: Number,
+    },
   },
   emit: ["viewClubDetail"],
   setup() {},
@@ -26,7 +29,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="club_card_container" @click="$emit('viewClubDetail', id)">
+  <div
+    class="club_card_container"
+    @click="$emit('viewClubDetail', id, managerId)"
+  >
     <img class="poster" :src="poster" alt="" />
     <span class="club_name">{{ clubName }}</span>
     <span class="desc">{{ description }}</span>

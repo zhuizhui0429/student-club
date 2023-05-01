@@ -3,5 +3,7 @@ export const needTipRequest: string[] = [
     '/activity/create',
     '/activity/update',
     '/user/updateInfo',
-    '/user/login'
+    '/user/login',
+    '/message/send',
+    '/club/approveJoin'
 ]

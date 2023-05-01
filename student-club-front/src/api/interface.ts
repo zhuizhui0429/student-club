@@ -15,6 +15,10 @@ export interface Club {
     poster: string
 }
 
+export interface ClubPreviewType extends Club {
+    managerId: number
+}
+
 export interface CreateClubPayload extends Pick<Club, 'clubName' | 'description'> {
     managerId: number
     poster: File
@@ -81,3 +85,24 @@ export type GetAllManagersResType = Array<{
     name: string
     managerClubName?: string
 }>
+
+export type MessageType = 'joinClubApplication' | 'exitClubTip' | 'joinClubApproval' | 'joinClubRefuse'
+export type HandleStatus = 'approved' | 'refused' | 'pending' | 'none'
+export interface Message {
+    id?: number
+    senderAvatar: string
+    senderName: string
+    senderId: number
+    title: string
+    content: string
+    type: MessageType
+}
+
+export interface MessageResType extends Message {
+    createTime: string
+    hasRead: boolean
+}
+
+export interface SendMessagePayload extends Message {
+    targetId: number
+}

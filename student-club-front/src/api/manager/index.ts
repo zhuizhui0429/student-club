@@ -40,3 +40,11 @@ export function updateActivity(data: UpdateActivityFormState) {
         }
     })
 }
+
+export function approveJoin(applicantId: number, managerId: number, applicantMessageId: number) {
+    return axiosInstance.post(`/club/approveJoin`, {
+        applicantId,
+        managerId,
+        applicantMessageId
+    })
+}

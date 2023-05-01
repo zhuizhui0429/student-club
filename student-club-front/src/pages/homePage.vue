@@ -20,7 +20,11 @@ import { useRouter } from "vue-router";
 import { useUserStore } from "@store";
 import { storeToRefs } from "pinia";
 import MyMessage from "@/components/myMessage.vue";
-import { getAllMessage, MessageItemType } from "@api";
+import {
+  getAllMessage,
+  MessageResType as MessageItemType,
+  updateLastReadTime,
+} from "@api";
 
 export default defineComponent({
   setup() {
@@ -35,10 +39,17 @@ export default defineComponent({
     );
 
     onMounted(() => {
-      getAllMessage(1).then((res) => {
-        messages.value = res;
-      });
+      if (userStore.isLogin) {
+        getAllMessage(userStore.id).then((res) => {
+          messages.value = res.data.data;
+        });
+      }
     });
+
+    const viewMessageHandler = () => {
+      hasViewedMessage.value = true;
+      updateLastReadTime(userStore.id);
+    };
 
     const map: Record<string, { title: string; subMenuKey?: string }> = {
       "/clubSquare": { title: "俱乐部广场" },
@@ -93,6 +104,7 @@ export default defineComponent({
       handleExit,
       isLogin,
       navigateToLogin,
+      viewMessageHandler,
     };
   },
   components: {
@@ -171,7 +183,7 @@ export default defineComponent({
               </template>
               <div class="message_tip_area">
                 <BellOutlined
-                  @click="hasViewedMessage = true"
+                  @click="viewMessageHandler"
                   style="font-size: 24px"
                 />
                 <p

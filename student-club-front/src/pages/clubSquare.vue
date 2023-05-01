@@ -5,28 +5,32 @@ import ActivityCard from "@/components/activityCard.vue";
 import Loading from "@/components/loading.vue";
 import {
   getAllClubPreviewInfo,
-  Club,
+  ClubPreviewType,
   getAllMembersOfClub,
   MemberOfClub,
   getAllActivitiesOfClub,
   ActivityOfClub,
   judgeIsJoinClub,
+  sendMessage,
 } from "@api";
 import {
   PoweroffOutlined,
   CheckCircleTwoTone,
   SmileTwoTone,
 } from "@ant-design/icons-vue";
+import { useUserStore } from "@store";
 
 export default defineComponent({
   setup() {
-    const clubList = ref<Club[]>([]);
+    const userStore = useUserStore();
+    const clubList = ref<ClubPreviewType[]>([]);
     const memberList = ref<MemberOfClub[]>([]);
     const activityList = ref<ActivityOfClub[]>([]);
     const clubDetailModalVisible = ref<boolean>(false);
     const hasJoined = ref<boolean>(false);
     const loadingClubList = ref<boolean>(true);
     const loadingClubDetail = ref<boolean>(true);
+    let clickedClubManagerId: number = 0;
 
     onMounted(() => {
       getAllClubPreviewInfo().then((res) => {
@@ -35,18 +39,32 @@ export default defineComponent({
       });
     });
 
-    const handleClickClubCard = async (id: number) => {
+    const handleClickClubCard = async (id: number, managerId: number) => {
+      clickedClubManagerId = managerId;
       clubDetailModalVisible.value = true;
       loadingClubDetail.value = true;
       const [membersData, activitiesData, joinJudgeData] = await Promise.all([
         getAllMembersOfClub(id),
         getAllActivitiesOfClub(id),
-        judgeIsJoinClub(id, 1),
+        judgeIsJoinClub(userStore.id, id),
       ]);
       memberList.value = membersData.data.data;
       activityList.value = activitiesData.data.data;
       hasJoined.value = joinJudgeData.data.data;
       loadingClubDetail.value = false;
+    };
+
+    const applyJoinClub = () => {
+      const { avatar, id, name } = userStore;
+      sendMessage({
+        senderAvatar: avatar,
+        senderId: id,
+        senderName: name,
+        type: "joinClubApplication",
+        targetId: clickedClubManagerId,
+        title: "加入俱乐部申请",
+        content: "我想加入俱乐部",
+      });
     };
 
     return {
@@ -58,6 +76,7 @@ export default defineComponent({
       hasJoined,
       loadingClubList,
       loadingClubDetail,
+      applyJoinClub,
     };
   },
   components: {
@@ -151,7 +170,12 @@ export default defineComponent({
         </div>
       </div>
       <div class="club_detail_operation_area">
-        <a-button v-if="!hasJoined" type="primary" size="large">
+        <a-button
+          @click="applyJoinClub"
+          v-if="!hasJoined"
+          type="primary"
+          size="large"
+        >
           <template #icon> <SmileTwoTone /> </template>
           申请加入俱乐部
         </a-button>

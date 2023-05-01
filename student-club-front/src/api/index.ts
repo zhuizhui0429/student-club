@@ -1,4 +1,4 @@
-import type { LoginPayload, ResponseFormatter, Club, UserInfo } from './interface'
+import type { LoginPayload, ResponseFormatter, UserInfo, SendMessagePayload, MessageResType, ClubPreviewType } from './interface'
 import axios from 'axios'
 import { needTipRequest } from './const'
 import { message } from 'ant-design-vue'
@@ -8,8 +8,6 @@ export const axiosInstance = axios.create({
     timeout: 3000
 })
 
-
-
 axiosInstance.interceptors.response.use((res) => {
     const requestUrl = res.request.responseURL as string
     const successInfo = res.data.message
@@ -18,7 +16,8 @@ axiosInstance.interceptors.response.use((res) => {
     }
     return res
 }, err => {
-    console.log('请求失败', err)
+    const errorMessage = err.response.data.message
+    message.error(errorMessage, 2)
 })
 
 export * from './interface'
@@ -34,7 +33,7 @@ export function login(payload: LoginPayload) {
 }
 
 export function getAllClubPreviewInfo() {
-    return axiosInstance.get<ResponseFormatter<Club[]>>('/club/allPreviewInfo')
+    return axiosInstance.get<ResponseFormatter<ClubPreviewType[]>>('/club/allPreviewInfo')
 }
 
 export function judgeIsJoinClub(userId: number, clubId: number) {
@@ -44,6 +43,17 @@ export function judgeIsJoinClub(userId: number, clubId: number) {
     })
 }
 
+export function sendMessage(data: SendMessagePayload) {
+    return axiosInstance.post('/message/send', data)
+}
+
+export function getAllMessage(userId: number) {
+    return axiosInstance.get<ResponseFormatter<MessageResType[]>>(`/message/getAll?userId=${userId}`)
+}
+
+export function updateLastReadTime(userId: number) {
+    return axiosInstance.get(`/user/updateReadMessageTime?userId=${userId}`)
+}
 
 
 

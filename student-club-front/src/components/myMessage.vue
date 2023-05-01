@@ -5,31 +5,89 @@ export default {
 </script>
 
 <script setup lang="ts">
-import type { MessageItemType } from "@api";
+import {
+  MessageResType as MessageItemType,
+  sendMessage,
+  approveJoin,
+  HandleStatus,
+} from "@api";
+import { useUserStore } from "@store";
+import { storeToRefs } from "pinia";
+
+const map: Partial<Record<HandleStatus, string>> = {
+  approved: "同意",
+  refused: "拒绝",
+};
+
 interface MyMessagePropsType {
   messageList: MessageItemType[];
 }
 defineProps<MyMessagePropsType>();
+const userStore = useUserStore();
+const { id, name, avatar } = storeToRefs(userStore);
+const handleReject = (message: MessageItemType) => {
+  const { senderId: targetId } = message;
+  sendMessage({
+    senderAvatar: avatar.value,
+    senderId: id.value,
+    senderName: name.value,
+    targetId,
+    title: "拒绝了你的入部申请",
+    content: "萨达",
+    type: "joinClubRefuse",
+  });
+};
+
+const handleApproval = (message: MessageItemType) => {
+  const { senderId: applicantId, id: applicantMessageId } = message;
+  approveJoin(applicantId, id.value, applicantMessageId!);
+};
 </script>
 
 <template>
   <div class="message_box_container">
     <div v-for="message in messageList" :key="message.id" class="message">
-      <img
-        src="https://img1.baidu.com/it/u=207813528,1388000580&fm=253&fmt=auto&app=120&f=JPEG?w=800&h=1200"
-        alt=""
-      />
-      <div class="detail">
-        <div class="name_date">
-          <p class="name">健身俱乐部</p>
-          <span class="date">2023-04-27 19:36</span>
+      <div class="message_content">
+        <img :src="message.senderAvatar" alt="" />
+        <div class="detail">
+          <div class="name_date">
+            <p class="name">{{ message.senderName }}</p>
+            <span class="date">{{ message.createTime }}</span>
+          </div>
+          <p class="activity_name">
+            {{ message.title }}
+            <span
+              class="status"
+              v-if="
+                message.type === 'joinClubApplication' &&
+                message.handleStatus !== 'pending'
+              "
+            >
+              已经{{ map[message.handleStatus] }}</span
+            >
+          </p>
+          <p class="desc">
+            {{ message.content }}
+          </p>
         </div>
-        <p class="activity_name">健身健美比赛</p>
-        <p class="desc">
-          这是一场比赛的描述这是一场比赛的描述这是一场比赛的描述
-        </p>
+      </div>
+      <div
+        class="operation_area"
+        v-if="
+          message.type === 'joinClubApplication' &&
+          message.handleStatus === 'pending'
+        "
+      >
+        <a-button danger @click="handleReject(message)">拒绝</a-button>
+        <a-button
+          style="margin-left: 16px"
+          type="primary"
+          @click="handleApproval(message)"
+          >同意</a-button
+        >
       </div>
     </div>
+    <a-empty v-if="!messageList.length" description="暂无消息" />
   </div>
 </template>
 
@@ -41,7 +99,17 @@ defineProps<MyMessagePropsType>();
   padding: 10px 15px;
   padding-bottom: 50px;
   background-color: #dcebe4;
-  .message {
+  .status {
+    font-size: 12px;
+    margin-left: 8px;
+  }
+  .operation_area {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .message_content {
     width: 300px;
     height: 132px;
     display: flex;
@@ -49,7 +117,6 @@ defineProps<MyMessagePropsType>();
     padding: 20px 10px;
     background-color: rgb(242, 247, 255);
     border-radius: 12px;
-    margin-bottom: 20px;
     img {
       flex: 0 0 auto;
       width: 42px;
