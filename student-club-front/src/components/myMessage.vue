@@ -13,6 +13,7 @@ import {
 } from "@api";
 import { useUserStore } from "@store";
 import { storeToRefs } from "pinia";
+import dayjs from "dayjs";
 
 const map: Partial<Record<HandleStatus, string>> = {
   approved: "同意",
@@ -52,7 +53,9 @@ const handleApproval = (message: MessageItemType) => {
         <div class="detail">
           <div class="name_date">
             <p class="name">{{ message.senderName }}</p>
-            <span class="date">{{ message.createTime }}</span>
+            <span class="date">{{
+              dayjs(message.createTime0).format("YYYY-MM-DD HH:mm:ss")
+            }}</span>
           </div>
           <p class="activity_name">
             {{ message.title }}
@@ -104,10 +107,10 @@ const handleApproval = (message: MessageItemType) => {
     margin-left: 8px;
   }
   .operation_area {
-    height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-bottom: 20px;
   }
   .message_content {
     width: 300px;
@@ -117,6 +120,7 @@ const handleApproval = (message: MessageItemType) => {
     padding: 20px 10px;
     background-color: rgb(242, 247, 255);
     border-radius: 12px;
+    margin-bottom: 15px;
     img {
       flex: 0 0 auto;
       width: 42px;
