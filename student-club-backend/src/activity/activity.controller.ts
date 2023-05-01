@@ -15,7 +15,6 @@ export class ActivityController {
   @UseInterceptors(FileInterceptor('image'))
   async createClub(@UploadedFile() poster: Express.Multer.File & { url: string }, @Body() payload: Omit<CreateActivityPayloadType, 'poster'>) {
     const { url } = poster
-    console.log('创建活动 payload', payload)
     const res = await this.activityService.createActivity({ poster: url, ...payload })
     return res
   }

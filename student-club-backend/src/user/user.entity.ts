@@ -20,7 +20,7 @@ export class User {
     @Column({ length: 200, default: 'https://img2.baidu.com/it/u=346152429,3164401706&fm=253&app=138&size=w931&n=0&f=JPG&fmt=auto?sec=1682874000&t=18b64f85a6e1017401418abba2a0f775' })
     avatar: string
 
-    @Column({ length: 50, default: '' })
+    @Column({ length: 50, default: '未命名用户' })
     name: string
 
     @Column({ length: 50, default: '' })
@@ -32,7 +32,7 @@ export class User {
     @Column({ length: 50, default: '' })
     description: string
 
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'timestamp', nullable: true })
     lastReadMessageTime: Date
 
     /**

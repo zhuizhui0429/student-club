@@ -5,6 +5,7 @@ import { Club, Message, User } from '../entities'
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FileModule } from '../fileModule'
 
+
 @Module({
   imports: [TypeOrmModule.forFeature([Club, Message, User]), FileModule],
   controllers: [ClubController],

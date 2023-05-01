@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm'
 import { User } from '../entities'
 
-export type MessageType = 'joinClubApplication' | 'exitClubTip' | 'joinClubApproval'
+export type MessageType = 'joinClubApplication' | 'exitClubTip' | 'joinClubApproval' | 'joinClubRefuse'
 export type handleStatus = 'approved' | 'refused' | 'pending' | 'none'
 
 @Entity()

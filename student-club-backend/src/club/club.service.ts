@@ -10,7 +10,7 @@ export class ClubService {
     constructor(
         @InjectRepository(Club) private clubRepository: Repository<Club>,
         @InjectRepository(Message) private messageRepository: Repository<Message>,
-        @InjectRepository(User) private userRepository: Repository<User>
+        @InjectRepository(User) private userRepository: Repository<User>,
     ) {
         getDataSource().then(ds => this.dataSource = ds)
     }
@@ -18,6 +18,7 @@ export class ClubService {
     async createClub(payload: CreateClubPayloadType) {
         const { managerId, ...clubInfo } = payload
         const clubEntity = await this.clubRepository.save(clubInfo)
+        console.log('this.dataSource', this.dataSource)
         await this.dataSource.createQueryBuilder()
             .relation(Club, 'manager')
             .of(clubEntity)
@@ -32,7 +33,8 @@ export class ClubService {
         return allClubEntity.map(({ clubName, id, poster, description, manager: { id: managerId } }) => ({ clubName, id, poster, description, managerId }))
     }
 
-    async getAllActivities(clubId: number) {
+    async getAllActivities(managerId: number) {
+        const { id: clubId } = await this.dataSource.createQueryBuilder().relation(User, 'managerClub').of(managerId).loadOne<Club>()
         const res: Activity[] = await this.dataSource.createQueryBuilder()
             .relation(Club, 'activities')
             .of(clubId)
@@ -40,10 +42,28 @@ export class ClubService {
         return res
     }
 
-    async getMembersOfClub(clubId: number) {
+    async getMembersOfClub(managerId: number) {
+        const { id: clubId } = await this.dataSource.createQueryBuilder().relation(User, 'managerClub').of(managerId).loadOne<Club>()
         const entities: User[] = await this.dataSource.createQueryBuilder()
             .relation(Club, 'members')
             .of(clubId)
+            .loadMany()
+        const members: getMembersOfClubResType = entities.map(({ avatar, college, grade, id, name }) => ({ id, name, avatar, college, grade }))
+        return members
+    }
+
+    async getActivitiesByClubId(id:number){
+        const res: Activity[] = await this.dataSource.createQueryBuilder()
+            .relation(Club, 'activities')
+            .of(id)
+            .loadMany()
+        return res
+    }
+
+    async getMembersByClubId(id: number) {
+        const entities: User[] = await this.dataSource.createQueryBuilder()
+            .relation(Club, 'members')
+            .of(id)
             .loadMany()
         const members: getMembersOfClubResType = entities.map(({ avatar, college, grade, id, name }) => ({ id, name, avatar, college, grade }))
         return members
@@ -83,7 +103,8 @@ export class ClubService {
                 senderAvatar,
                 type: 'joinClubApproval',
                 title: '同意了你的入部申请',
-                content: `欢迎加入${clubEntity.clubName}大家庭`,
+                content: `欢迎加入${clubEntity.clubName}大家提`,
+                targetId: applicantId,
                 createTime: new Date()
             }),
             this.messageRepository.update({
@@ -92,8 +113,32 @@ export class ClubService {
                 handleStatus: 'approved'
             })
         ])
-        await this.dataSource.createQueryBuilder().relation(Message, 'targetUser').of(messageEntity).set(applicantId)
         return messageEntity
+    }
+
+    async refuseJoin(payload: RefuseJoinPayloadType) {
+        const { managerId, applicantId, applicantMessageId, reason } = payload
+        const { id: senderId, name: senderName, avatar: senderAvatar } = await this.userRepository.findOne({
+            where: {
+                id: managerId
+            }
+        })
+        await Promise.all([
+            this.messageRepository.update({
+                id: applicantMessageId,
+            }, {
+                handleStatus: 'refused'
+            }),
+            this.messageRepository.save({
+                senderId,
+                senderAvatar,
+                senderName,
+                title: '拒绝了你的入部申请',
+                content: reason || '',
+                targetId: applicantId,
+                type: 'joinClubRefuse'
+            })
+        ])
     }
 }
 
@@ -110,3 +155,8 @@ export interface ApproveJoinPayloadType {
     applicantId: number
     managerId: number
 }
+
+export interface RefuseJoinPayloadType extends ApproveJoinPayloadType {
+    reason: string
+}
+

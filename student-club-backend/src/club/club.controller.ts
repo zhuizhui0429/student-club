@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Query, UseInterceptors, UploadedFile, SetMetadata } from '@nestjs/common';
 import { ClubService } from './club.service';
 import { ApiOperation, ApiTags, ApiBody } from '@nestjs/swagger';
-import type { CreateClubPayloadType, ApproveJoinPayloadType } from './club.service'
+import type { CreateClubPayloadType, ApproveJoinPayloadType, RefuseJoinPayloadType } from './club.service'
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JoinClubExample, JudgeIsJoinExample } from './club.example'
 
@@ -31,17 +31,33 @@ export class ClubController {
   @Get('allActivities')
   @ApiOperation({ description: '获取某个俱乐部的所有活动' })
   @SetMetadata('successMessage', '获取成功')
-  async getAllActivitiesOfClub(@Query('clubId') clubId: number) {
-    const res = await this.clubService.getAllActivities(clubId)
+  async getAllActivitiesOfClub(@Query('managerId') managerId: number) {
+    const res = await this.clubService.getAllActivities(managerId)
     return res
   }
 
   @Get('members')
   @ApiOperation({ description: '获取某个俱乐部的所有成员' })
   @SetMetadata('successMessage', '获取成功')
-  async getMemberCountOfClub(@Query('clubId') clubId: number) {
+  async getMemberCountOfClub(@Query('managerId') clubId: number) {
     console.log('id', clubId)
     const res = await this.clubService.getMembersOfClub(clubId)
+    return res
+  }
+
+  @Get('allActivitiesByClubId')
+  @ApiOperation({ description: '获取某个俱乐部的所有活动' })
+  @SetMetadata('successMessage', '获取成功')
+  async getAllActivitiesByClubId(@Query('clubId') id: number) {
+    const res = await this.clubService.getActivitiesByClubId(id)
+    return res
+  }
+
+  @Get('membersByClubId')
+  @ApiOperation({ description: '获取某个俱乐部的所有成员' })
+  @SetMetadata('successMessage', '获取成功')
+  async getMembersByClubId(@Query('clubId') clubId: number) {
+    const res = await this.clubService.getMembersByClubId(clubId)
     return res
   }
 
@@ -72,5 +88,14 @@ export class ClubController {
     const res = await this.clubService.approveJoin(payload)
     return res
   }
+
+  @Post('refuseJoin')
+  @ApiOperation({ description: '拒绝用户加入俱乐部的申请' })
+  @SetMetadata('successMessage', '已拒绝加入')
+  async refuseJoin(@Body() payload: RefuseJoinPayloadType) {
+    const res = await this.clubService.refuseJoin(payload)
+    return res
+  }
+
 
 }
