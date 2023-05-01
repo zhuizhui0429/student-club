@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClubModule } from './club/club.module';
 import { ActivityModule } from './activity/activity.module';
 import { FileModule } from './fileModule'
+import { MessageModule } from './message/message.module';
 @Module({
   imports: [
 
@@ -21,13 +22,14 @@ import { FileModule } from './fileModule'
       verboseRetryLog: true,
       retryAttempts: 3,
       retryDelay: 3000,
-      timezone: 'Z',
+      timezone: '+08:00',
       autoLoadEntities: true
     }),
     UserModule,
     ClubModule,
     ActivityModule,
-    FileModule
+    FileModule,
+    MessageModule
   ],
   controllers: [AppController],
   providers: [AppService],

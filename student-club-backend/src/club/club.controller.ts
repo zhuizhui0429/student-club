@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Query, UseInterceptors, UploadedFile, SetMetadata } from '@nestjs/common';
 import { ClubService } from './club.service';
 import { ApiOperation, ApiTags, ApiBody } from '@nestjs/swagger';
-import type { CreateClubPayloadType } from './club.service'
+import type { CreateClubPayloadType, ApproveJoinPayloadType } from './club.service'
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JoinClubExample, JudgeIsJoinExample } from './club.example'
 
@@ -62,6 +62,14 @@ export class ClubController {
   async judgeIsJoin(@Body() payload: typeof JudgeIsJoinExample) {
     const { clubId, userId } = payload
     const res = await this.clubService.judgeIsJoin(userId, clubId)
+    return res
+  }
+
+  @Post('approveJoin')
+  @ApiOperation({ description: '批准用户加入俱乐部的申请' })
+  @SetMetadata('successMessage', '已同意加入')
+  async approveJoin(@Body() payload: ApproveJoinPayloadType) {
+    const res = await this.clubService.approveJoin(payload)
     return res
   }
 

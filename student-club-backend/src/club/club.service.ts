@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Club, Activity, User } from '../entities'
+import { Club, Activity, User, Message } from '../entities'
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { getDataSource } from '../db'
@@ -8,7 +8,9 @@ import { getDataSource } from '../db'
 export class ClubService {
     dataSource: DataSource
     constructor(
-        @InjectRepository(Club) private clubRepository: Repository<Club>
+        @InjectRepository(Club) private clubRepository: Repository<Club>,
+        @InjectRepository(Message) private messageRepository: Repository<Message>,
+        @InjectRepository(User) private userRepository: Repository<User>
     ) {
         getDataSource().then(ds => this.dataSource = ds)
     }
@@ -24,8 +26,10 @@ export class ClubService {
     }
 
     async getAllClubPreviewInfo(): Promise<GetAllClubPreviewInfoResType> {
-        const allClubEntity = await this.clubRepository.find()
-        return allClubEntity.map(({ clubName, id, poster, description }) => ({ clubName, id, poster, description }))
+        const allClubEntity = await this.clubRepository.find({
+            relations: ['manager']
+        })
+        return allClubEntity.map(({ clubName, id, poster, description, manager: { id: managerId } }) => ({ clubName, id, poster, description, managerId }))
     }
 
     async getAllActivities(clubId: number) {
@@ -41,7 +45,7 @@ export class ClubService {
             .relation(Club, 'members')
             .of(clubId)
             .loadMany()
-        const members: getMembersOfClubResType = entities.map(({ avatar, college, grade, id, name }) => ({ id,name,avatar, college, grade }))
+        const members: getMembersOfClubResType = entities.map(({ avatar, college, grade, id, name }) => ({ id, name, avatar, college, grade }))
         return members
     }
 
@@ -61,12 +65,48 @@ export class ClubService {
             .getOne()
         return Boolean(res)
     }
+
+    async approveJoin(payload: ApproveJoinPayloadType) {
+        const { applicantId, managerId, applicantMessageId } = payload
+        const clubEntity = await this.dataSource.getRepository(Club)
+            .createQueryBuilder('club')
+            .where("club.managerId = :managerId", { managerId })
+            .getOne()
+        const { id: senderId, name: senderName, avatar: senderAvatar } = await this.userRepository.findOne({
+            where: { id: managerId }
+        })
+        const [, messageEntity] = await Promise.all([
+            this.dataSource.createQueryBuilder().relation(Club, 'members').of(clubEntity).add(applicantId),
+            this.messageRepository.save({
+                senderId,
+                senderName,
+                senderAvatar,
+                type: 'joinClubApproval',
+                title: '同意了你的入部申请',
+                content: `欢迎加入${clubEntity.clubName}大家庭`,
+                createTime: new Date()
+            }),
+            this.messageRepository.update({
+                id: applicantMessageId
+            }, {
+                handleStatus: 'approved'
+            })
+        ])
+        await this.dataSource.createQueryBuilder().relation(Message, 'targetUser').of(messageEntity).set(applicantId)
+        return messageEntity
+    }
 }
 
 export interface CreateClubPayloadType extends Pick<Club, 'clubName' | 'description' | 'poster'> {
     managerId: number
 }
 
-export type GetAllClubPreviewInfoResType = Array<Pick<Club, 'clubName' | 'id' | 'poster' | 'description'>>
+export type GetAllClubPreviewInfoResType = Array<Pick<Club, 'clubName' | 'id' | 'poster' | 'description'> & { managerId: number }>
 
 export type getMembersOfClubResType = Array<Pick<User, 'avatar' | 'college' | 'grade'>>
+
+export interface ApproveJoinPayloadType {
+    applicantMessageId: number
+    applicantId: number
+    managerId: number
+}

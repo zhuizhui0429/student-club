@@ -53,4 +53,12 @@ export class UserController {
     return res
   }
 
+  @Get('updateReadMessageTime')
+  @ApiOperation({ description: '更新上次阅读消息的时间' })
+  @SetMetadata('successMessage', '更新成功')
+  async updateReadMessageTime(@Query('userId') userId: number) {
+    const res = await this.userService.updateReadMessageTime(userId)
+    return res
+  }
+
 }

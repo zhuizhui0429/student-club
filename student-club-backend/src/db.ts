@@ -1,12 +1,12 @@
 import { DataSource } from 'typeorm';
-import { User, Club, Activity } from './entities'
+import { User, Club, Activity, Message } from './entities'
 
 
 const db = new DataSource({
     type: "mysql",
     synchronize: true,
     database: "student-club",
-    entities: [User, Club, Activity],
+    entities: [User, Club, Activity,Message],
     host: 'localhost',
     port: 3306,
     username: 'root',

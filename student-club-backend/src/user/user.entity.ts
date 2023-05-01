@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToOne } from 'typeorm'
-import { Club } from '../entities'
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToOne, OneToMany } from 'typeorm'
+import { Club, Message } from '../entities'
 
 export type UserType = 'student' | 'manager' | 'admin'
 
@@ -32,6 +32,9 @@ export class User {
     @Column({ length: 50, default: '' })
     description: string
 
+    @Column({ type: 'timestamp' })
+    lastReadMessageTime: Date
+
     /**
      * 当该用户为学生时,其参加的所有俱乐部
      */
@@ -40,4 +43,13 @@ export class User {
 
     @OneToOne(() => Club, club => club.manager)
     managerClub: Club
+
+    /**
+     *
+     *用户接收到的所有消息(用户的俱乐部申请,经理的同意申请,用户的退出俱乐部提示)
+     * @type {Message[]}
+     * @memberof User
+     */
+    @OneToMany(() => Message, message => message.targetUser)
+    messages: Message[]
 }

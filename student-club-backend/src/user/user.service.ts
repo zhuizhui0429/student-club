@@ -75,6 +75,15 @@ export class UserService {
         return res
     }
 
+    async updateReadMessageTime(id: number) {
+        const res = await this.userRepository.update({
+            id
+        }, {
+            lastReadMessageTime: new Date()
+        })
+        return res
+    }
+
 }
 
 export type RegisterPayloadType = Pick<User, 'password' | 'account' | 'type'>
