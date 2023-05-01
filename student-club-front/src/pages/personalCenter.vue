@@ -117,11 +117,8 @@ export default defineComponent({
       <div class="joined_club">
         <p class="title">已加入的俱乐部</p>
         <div class="club_list">
-          <div class="empty_list">
-            <a-empty
-              v-if="!joinedClubList.length"
-              description="暂未加入任何俱乐部"
-            />
+          <div class="empty_list" v-if="!joinedClubList.length">
+            <a-empty description="暂未加入任何俱乐部" />
           </div>
 
           <div
