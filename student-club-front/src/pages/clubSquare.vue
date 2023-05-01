@@ -19,10 +19,12 @@ import {
   SmileTwoTone,
 } from "@ant-design/icons-vue";
 import { useUserStore } from "@store";
+import { storeToRefs } from "pinia";
 
 export default defineComponent({
   setup() {
     const userStore = useUserStore();
+    const { isLogin, type } = storeToRefs(userStore);
     const clubList = ref<ClubPreviewType[]>([]);
     const memberList = ref<MemberOfClub[]>([]);
     const activityList = ref<ActivityOfClub[]>([]);
@@ -77,6 +79,8 @@ export default defineComponent({
       loadingClubList,
       loadingClubDetail,
       applyJoinClub,
+      isLogin,
+      type,
     };
   },
   components: {
@@ -169,7 +173,10 @@ export default defineComponent({
           ></a-empty>
         </div>
       </div>
-      <div class="club_detail_operation_area">
+      <div
+        class="club_detail_operation_area"
+        v-if="isLogin && type === 'student'"
+      >
         <a-button
           @click="applyJoinClub"
           v-if="!hasJoined"
