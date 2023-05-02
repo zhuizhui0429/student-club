@@ -65,10 +65,11 @@ export interface UserInfo {
     type: role
     avatar: string
     college: string
-    description: string
+    description?: string
     grade: string,
     account: string
     password: string
+    email?: string
 }
 
 export interface LoginPayload {
@@ -80,7 +81,7 @@ export interface RegisterPayload extends LoginPayload {
     type: role
 }
 
-export interface UpdateUserInfoPayload extends Pick<UserInfo, 'college' | 'description' | 'grade' | 'name' | 'id'> {
+export interface UpdateUserInfoPayload extends Pick<UserInfo, 'college' | 'description' | 'grade' | 'name' | 'id' | 'email'> {
     avatar: File | string
 }
 

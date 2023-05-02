@@ -14,6 +14,7 @@ interface UserInfoFormState {
   avatar: File;
   grade: string;
   personalProfile: string;
+  email: string;
 }
 
 export default defineComponent({
@@ -38,11 +39,16 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    email: {
+      type: String,
+      default: "",
+    },
   },
   setup(props) {
     const userStore = useUserStore();
     const { id } = storeToRefs(userStore);
-    const { nickname, college, grade, personalProfile, initialAvatar } = props;
+    const { nickname, college, grade, personalProfile, initialAvatar, email } =
+      props;
     const formRef = ref<FormExpose>({} as any);
     const formState = reactive<UserInfoFormState>({
       nickname,
@@ -50,8 +56,19 @@ export default defineComponent({
       grade: grade,
       personalProfile,
       avatar: undefined as any,
+      email,
     });
 
+    const emailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+    const validateEmail = async function (
+      _rule: RuleObject,
+      value: UserInfoFormState["email"]
+    ) {
+      if (!value || emailReg.test(value)) {
+        return Promise.resolve();
+      }
+      return Promise.reject();
+    };
     const rules: Partial<Record<keyof UserInfoFormState, RuleObject[]>> = {
       avatar: [
         ...[
@@ -89,6 +106,13 @@ export default defineComponent({
           message: "你还未选择过自己的年级信息,请选择年级",
         },
       ],
+      email: [
+        {
+          validator: validateEmail,
+          trigger: "change",
+          message: "邮箱格式不正确",
+        },
+      ],
       personalProfile: [
         {
           min: 5,
@@ -109,6 +133,7 @@ export default defineComponent({
             grade,
             college,
             personalProfile: description,
+            email,
           } = res as UserInfoFormState;
           updateInfo({
             avatar,
@@ -117,6 +142,7 @@ export default defineComponent({
             college,
             description,
             id: id.value,
+            email,
           }).then((res) => {
             userStore.updateState({
               avatar: res.data.data.avatar,
@@ -124,6 +150,7 @@ export default defineComponent({
               grade,
               college,
               description,
+              email,
             });
           });
         })
@@ -192,6 +219,12 @@ export default defineComponent({
             >{{ grade }}</a-select-option
           >
         </a-select>
+      </a-form-item>
+      <a-form-item label="邮箱" name="email">
+        <a-input
+          v-model:value="formState.email"
+          placeholder="可绑定邮箱接受俱乐部邮件通知"
+        />
       </a-form-item>
       <a-form-item label="个人简介" name="personalProfile">
         <a-textarea
