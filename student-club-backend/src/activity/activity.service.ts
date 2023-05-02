@@ -4,6 +4,7 @@ import { Activity, User, Club } from '../entities'
 import { getDataSource } from '../db'
 import { Repository, DataSource } from 'typeorm';
 import { formatDate } from '../utils'
+import { sendEmail } from '../email'
 @Injectable()
 export class ActivityService {
     dataSource: DataSource
@@ -16,19 +17,38 @@ export class ActivityService {
 
     async createActivity(payload: CreateActivityPayloadType) {
         const { managerId, ...rest } = payload
-        const { id: clubId } = await this.dataSource.createQueryBuilder().relation(User, 'managerClub').of(managerId).loadOne<Club>()
+        const { id: clubId, clubName } = await this.dataSource.createQueryBuilder().relation(User, 'managerClub').of(managerId).loadOne<Club>()
 
         const activityEntity = await this.activityRepository.save({ ...rest, date: formatDate(new Date()) })
-        console.log('clubId', clubId)
         await this.dataSource.createQueryBuilder()
             .relation(Activity, 'club')
             .of(activityEntity)
             .set(clubId)
+
+        const members = await this.dataSource.createQueryBuilder().relation(Club, 'members').of(clubId).loadMany<User>()
+        const receiverEmails = members.filter(member => member.email && ['both', 'publish'].includes(member.emailReceiveConfig)).map(member => member.email)
+        console.log('发布活动:receiverEmails', receiverEmails)
+        sendEmail({
+            type: 'publishActivity',
+            to: receiverEmails,
+            activityName: payload.title,
+            clubName
+        })
         return activityEntity
     }
 
     async updateActivity(payload: UpdateActivityPayloadType) {
         const { id, title, description, poster, originalPoster, entryCondition, location } = payload
+        const { id: clubId, clubName } = await this.dataSource.createQueryBuilder().relation(Activity, 'club').of(id).loadOne<Club>()
+
+        const members = await this.dataSource.createQueryBuilder().relation(Club, 'members').of(clubId).loadMany<User>()
+        const receiverEmails = members.filter(member => member.email && ['both', 'publish'].includes(member.emailReceiveConfig)).map(member => member.email)
+        sendEmail({
+            type: 'updateActivity',
+            to: receiverEmails,
+            activityName: payload.title,
+            clubName
+        })
         return await this.activityRepository.update({
             id
         }, {
