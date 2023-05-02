@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Query, SetMetadata, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiOperation, ApiTags, ApiBody } from '@nestjs/swagger';
-import type { RegisterPayloadType, LoginPayloadType, UpdateUserInfoPayloadType } from './user.service';
+import type { RegisterPayloadType, LoginPayloadType, UpdateUserInfoPayloadType, UpdateEmailReceiveConfigPayloadType } from './user.service';
 import { RegisterPayloadExample, LoginPayloadExample } from './user.example'
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -58,6 +58,18 @@ export class UserController {
   @SetMetadata('successMessage', '更新成功')
   async updateReadMessageTime(@Query('userId') userId: number) {
     const res = await this.userService.updateReadMessageTime(userId)
+    return res
+  }
+
+  @Post('updateEmailReceiveConfig')
+  @ApiOperation({ description: '更新用户接受邮件通知的配置' })
+  @SetMetadata('successMessage', '邮件通知设置更新成功')
+  async updateEmailReceiveConfig(@Body() payload: UpdateEmailReceiveConfigPayloadType) {
+    const { id, config } = payload
+    const res = await this.userService.updateEmailReceiveConfig({
+      id,
+      config
+    })
     return res
   }
 

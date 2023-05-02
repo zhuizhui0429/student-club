@@ -1,5 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { User } from '../entities'
+import { User, EmailReceiveConfig } from '../entities'
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { getDataSource } from '../db'
@@ -84,6 +84,15 @@ export class UserService {
         return res
     }
 
+    async updateEmailReceiveConfig(payload: UpdateEmailReceiveConfigPayloadType) {
+        const { id, config } = payload
+        return await this.userRepository.update({
+            id
+        }, {
+            emailReceiveConfig: config
+        })
+    }
+
 }
 
 export interface RegisterPayloadType extends Pick<User, 'password' | 'account' | 'type'> {
@@ -101,3 +110,8 @@ export type GetAllManagersResType = Array<{
     name: string
     managerClubName?: string
 }>
+
+export type UpdateEmailReceiveConfigPayloadType = {
+    id: number
+    config: EmailReceiveConfig
+}
