@@ -22,6 +22,9 @@ dependencies:
   '@types/multer':
     specifier: ^1.4.7
     version: registry.npmmirror.com/@types/multer@1.4.7
+  '@types/nodemailer':
+    specifier: ^6.4.7
+    version: registry.npmmirror.com/@types/nodemailer@6.4.7
   dayjs:
     specifier: ^1.11.7
     version: registry.npmmirror.com/dayjs@1.11.7
@@ -34,6 +37,9 @@ dependencies:
   mysql2:
     specifier: ^3.2.4
     version: registry.npmmirror.com/mysql2@3.2.4
+  nodemailer:
+    specifier: ^6.9.1
+    version: registry.npmmirror.com/nodemailer@6.9.1
   reflect-metadata:
     specifier: ^0.1.13
     version: registry.npmmirror.com/reflect-metadata@0.1.13
@@ -1456,6 +1462,14 @@ packages:
     resolution: {integrity: sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/node/-/node-18.11.18.tgz}
     name: '@types/node'
     version: 18.11.18
+
+  registry.npmmirror.com/@types/nodemailer@6.4.7:
+    resolution: {integrity: sha512-f5qCBGAn/f0qtRcd4SEn88c8Fp3Swct1731X4ryPKqS61/A3LmmzN8zaEz7hneJvpjFbUUgY7lru/B/7ODTazg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/nodemailer/-/nodemailer-6.4.7.tgz}
+    name: '@types/nodemailer'
+    version: 6.4.7
+    dependencies:
+      '@types/node': registry.npmmirror.com/@types/node@18.11.18
+    dev: false
 
   registry.npmmirror.com/@types/parse-json@4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/parse-json/-/parse-json-4.0.0.tgz}
@@ -5038,6 +5052,13 @@ packages:
     name: node-releases
     version: 2.0.10
     dev: true
+
+  registry.npmmirror.com/nodemailer@6.9.1:
+    resolution: {integrity: sha512-qHw7dOiU5UKNnQpXktdgQ1d3OFgRAekuvbJLcdG5dnEo/GtcTHRYM7+UfJARdOFU9WUQO8OiIamgWPmiSFHYAA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/nodemailer/-/nodemailer-6.9.1.tgz}
+    name: nodemailer
+    version: 6.9.1
+    engines: {node: '>=6.0.0'}
+    dev: false
 
   registry.npmmirror.com/normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/normalize-path/-/normalize-path-3.0.0.tgz}
