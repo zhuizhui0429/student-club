@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Club, Activity, User, Message } from '../entities'
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
-import { getDataSource } from '../db'
+import { getDataSource } from '../db';
+import { sendEmail } from '../email'
 
 @Injectable()
 export class ClubService {
@@ -94,6 +95,17 @@ export class ClubService {
         const { id: senderId, name: senderName, avatar: senderAvatar } = await this.userRepository.findOne({
             where: { id: managerId }
         })
+        const { email } = await this.userRepository.findOne({
+            where: { id: applicantId }
+        })
+        if (email) {
+            console.log('发送欢迎邮件', email)
+            sendEmail({
+                type: 'welcomeJoin',
+                clubName: clubEntity.clubName,
+                to: [email],
+            })
+        }
         const [, messageEntity] = await Promise.all([
             this.dataSource.createQueryBuilder().relation(Club, 'members').of(clubEntity).add(applicantId),
             this.messageRepository.save({
@@ -112,6 +124,7 @@ export class ClubService {
             })
         ])
         await this.dataSource.createQueryBuilder().relation(Message, 'targetUser').of(messageEntity).set(applicantId)
+
         return messageEntity
     }
 
