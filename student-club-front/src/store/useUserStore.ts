@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia'
 import { reactive, toRefs } from 'vue'
 import type { UserInfo } from '@api'
-import { login as loginRequest } from '@api'
+import { login as loginRequest, EmailReceiveConfig } from '@api'
 
 export const LOGIN_INFO = 'login_state'
 
 interface UserStoreStateType extends UserInfo {
-    isLogin: boolean
+    isLogin: boolean,
+    emailReceiveConfig: EmailReceiveConfig
+
 }
 
 export const useUserStore = defineStore('user', () => {
@@ -18,7 +20,8 @@ export const useUserStore = defineStore('user', () => {
         college: '',
         description: '',
         grade: '',
-        isLogin: false
+        isLogin: false,
+        emailReceiveConfig: 'both'
     }
     const storageState = JSON.parse(localStorage.getItem(LOGIN_INFO) || JSON.stringify(defaultState))
     const userState = reactive<UserStoreStateType>(storageState)

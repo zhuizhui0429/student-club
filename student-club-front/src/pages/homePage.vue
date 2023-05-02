@@ -14,6 +14,7 @@ import {
   BankOutlined,
   MailOutlined,
   UserOutlined,
+  ToolOutlined,
 } from "@ant-design/icons-vue";
 import type { MenuProps } from "ant-design-vue/es/menu/src/Menu";
 import { useRouter } from "vue-router";
@@ -24,6 +25,8 @@ import {
   getAllMessage,
   MessageResType as MessageItemType,
   updateLastReadTime,
+  EmailReceiveConfig,
+  updateEmailReceiveConfig,
 } from "@api";
 
 export default defineComponent({
@@ -91,6 +94,19 @@ export default defineComponent({
     };
 
     const navigateToLogin = () => router.push({ name: "login" });
+
+    const emailConfig = ref<EmailReceiveConfig>(userStore.emailReceiveConfig);
+    const handleEmailConfigChange = (e: any) => {
+      const config = e.target.value as EmailReceiveConfig;
+      updateEmailReceiveConfig(userStore.id, config);
+    };
+    const textMap: Record<EmailReceiveConfig, string> = {
+      both: "接受所有通知",
+      onlyUpdate: "仅接受活动更新的通知",
+      onlyPublish: "仅接受活动发布的通知",
+      none: "不接受任何通知",
+    };
+
     return {
       ...toRefs(menuState),
       handleClickMenuItem,
@@ -105,6 +121,9 @@ export default defineComponent({
       isLogin,
       navigateToLogin,
       viewMessageHandler,
+      emailConfig,
+      textMap,
+      handleEmailConfigChange,
     };
   },
   components: {
@@ -114,6 +133,7 @@ export default defineComponent({
     BankOutlined,
     MailOutlined,
     UserOutlined,
+    ToolOutlined,
     MyMessage,
   },
 });
@@ -174,6 +194,35 @@ export default defineComponent({
         </div>
         <div class="right_operation">
           <template v-if="isLogin">
+            <a-popover
+              overlayClassName="email_setting_popover"
+              :mouseLeaveDelay="0.5"
+              color="#dcebe4"
+              trigger="click"
+            >
+              <template #title>邮件通知设置</template>
+              <template #content>
+                <div class="email_setting_content">
+                  <a-radio-group
+                    v-model:value="emailConfig"
+                    @change="handleEmailConfigChange"
+                  >
+                    <a-radio
+                      v-for="config in Object.keys(textMap)"
+                      :value="config"
+                      :key="config"
+                      >{{ textMap[config] }}</a-radio
+                    >
+                  </a-radio-group>
+                </div>
+              </template>
+              <div class="email_setting_icon">
+                <ToolOutlined
+                  @click="viewMessageHandler"
+                  style="font-size: 24px"
+                />
+              </div>
+            </a-popover>
             <a-popover
               overlayClassName="message_popover"
               :mouseLeaveDelay="0.5"
@@ -263,7 +312,7 @@ export default defineComponent({
         }
       }
       .right_operation {
-        width: 400px;
+        width: 500px;
         display: flex;
         align-items: center;
         justify-content: flex-end;
@@ -322,9 +371,22 @@ export default defineComponent({
 </style>
 
 <style lang="less">
+.email_setting_popover,
 .message_popover {
   .ant-popover-arrow::before {
     background-color: #dcebe4;
   }
+}
+
+.email_setting_icon {
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.email_setting_content {
+  width: 200px;
+  height: 100px;
 }
 </style>

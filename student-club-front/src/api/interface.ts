@@ -72,6 +72,8 @@ export interface UserInfo {
     email?: string
 }
 
+export type EmailReceiveConfig = 'both' | 'none' | 'onlyUpdate' | 'onlyPublish'
+
 export interface LoginPayload {
     account: string
     password: string

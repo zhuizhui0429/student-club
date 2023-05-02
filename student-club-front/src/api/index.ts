@@ -1,4 +1,8 @@
-import type { LoginPayload, RegisterPayload, ResponseFormatter, UserInfo, SendMessagePayload, MessageResType, ClubPreviewType } from './interface'
+import type {
+    LoginPayload, RegisterPayload, ResponseFormatter,
+    UserInfo, SendMessagePayload, MessageResType, ClubPreviewType,
+    EmailReceiveConfig
+} from './interface'
 import axios from 'axios'
 import { needTipRequest } from './const'
 import { message } from 'ant-design-vue'
@@ -61,5 +65,11 @@ export function updateLastReadTime(userId: number) {
     return axiosInstance.get(`/user/updateReadMessageTime?userId=${userId}`)
 }
 
+export function updateEmailReceiveConfig(id: number, config: EmailReceiveConfig) {
+    return axiosInstance.post('/user/updateEmailReceiveConfig', {
+        id,
+        config
+    })
+}
 
 
