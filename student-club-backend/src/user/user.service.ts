@@ -86,7 +86,9 @@ export class UserService {
 
 }
 
-export type RegisterPayloadType = Pick<User, 'password' | 'account' | 'type'>
+export interface RegisterPayloadType extends Pick<User, 'password' | 'account' | 'type'> {
+    email?: string
+}
 
 export type LoginPayloadType = Omit<RegisterPayloadType, 'type'>
 
