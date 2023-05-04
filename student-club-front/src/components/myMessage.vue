@@ -17,8 +17,8 @@ import { storeToRefs } from "pinia";
 import dayjs from "dayjs";
 
 const map: Partial<Record<HandleStatus, string>> = {
-  approved: "同意",
-  refused: "拒绝",
+  approved: "accept",
+  refused: "refuse",
 };
 
 interface MyMessagePropsType {
@@ -68,7 +68,7 @@ const handleApproval = (message: MessageItemType) => {
                 message.handleStatus !== 'pending'
               "
             >
-              已经{{ map[message.handleStatus] }}</span
+              has {{ map[message.handleStatus] }}</span
             >
           </p>
           <p class="desc">
@@ -83,16 +83,16 @@ const handleApproval = (message: MessageItemType) => {
           message.handleStatus === 'pending'
         "
       >
-        <a-button danger @click="handleReject(message)">拒绝</a-button>
+        <a-button danger @click="handleReject(message)">refuse</a-button>
         <a-button
           style="margin-left: 16px"
           type="primary"
           @click="handleApproval(message)"
-          >同意</a-button
+          >accept</a-button
         >
       </div>
     </div>
-    <a-empty v-if="!messageList.length" description="暂无消息" />
+    <a-empty v-if="!messageList.length" description="no news" />
   </div>
 </template>
 

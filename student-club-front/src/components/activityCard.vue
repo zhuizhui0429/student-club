@@ -33,9 +33,9 @@ export default defineComponent({
     <img :src="poster" alt="" class="poster" />
     <div class="info">
       <p class="title">{{ title }}</p>
-      <span>时间: {{ date }}</span>
-      <span>地点: {{ location }}</span>
-      <span>入场条件：{{ entryCondition }}</span>
+      <span>time: {{ date }}</span>
+      <span>location: {{ location }}</span>
+      <span>entryCondition: {{ entryCondition }}</span>
     </div>
   </div>
 </template>

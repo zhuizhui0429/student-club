@@ -36,9 +36,10 @@ watch(open, () => {
 });
 
 const titleMap: Partial<Record<MessageType, string>> = {
-  joinClubApplication: "申请加入俱乐部",
-  joinClubRefuse: "拒绝了你的入部申请",
-  private: "私发更新消息",
+  joinClubApplication: "apply to join the club",
+  joinClubRefuse:
+    "Your application for admission to the Ministry has been rejected",
+  private: "Private update message",
 };
 
 const formRef = ref<FormExpose>({} as any);
@@ -56,8 +57,14 @@ watch(
 );
 
 const rules: Record<keyof SendMessageFormState, RuleObject> = {
-  title: { required: true, message: "请输入私发消息的标题" },
-  content: { required: true, message: "请输入私发消息的内容" },
+  title: {
+    required: true,
+    message: "Please enter the title of the private message",
+  },
+  content: {
+    required: true,
+    message: "Please enter the content of the private message",
+  },
 };
 
 const userStore = useUserStore();
@@ -102,19 +109,21 @@ const handleSendMessage = () => {
       ref="formRef"
       :labelCol="{ span: 4 }"
     >
-      <a-form-item label="消息标题" name="title">
+      <a-form-item label="title" name="title">
         <a-input v-model:value="formState.title" disabled />
       </a-form-item>
-      <a-form-item label="消息内容" name="content">
+      <a-form-item label="content" name="content">
         <a-textarea
           v-model:value="formState.content"
-          placeholder="请输入申请信息"
+          placeholder="please enter content"
           :rows="3"
           style="resize: none"
         />
       </a-form-item>
       <a-form-item :wrapperCol="{ offset: 10 }">
-        <a-button type="primary" @click="handleSendMessage">发送消息</a-button>
+        <a-button type="primary" @click="handleSendMessage"
+          >Send a message</a-button
+        >
       </a-form-item>
     </a-form>
   </a-modal>

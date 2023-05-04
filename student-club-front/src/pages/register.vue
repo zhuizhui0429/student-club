@@ -21,9 +21,11 @@ export default defineComponent({
       value: RegisterFormState["password"]
     ) {
       if (value.length < 8 || value.length > 16) {
-        return Promise.reject("密码的长度需要在8~16位之间");
+        return Promise.reject(
+          "The length of the password needs to be between 8 and 16 characters"
+        );
       } else if (!passwordReg.test(value)) {
-        return Promise.reject("密码必须同时包含数字和字母");
+        return Promise.reject("Password must contain both numbers and letters");
       }
       return Promise.resolve();
     };
@@ -33,9 +35,13 @@ export default defineComponent({
       value: RegisterFormState["password2"]
     ) {
       if (value.length === 0) {
-        return Promise.reject("请再次输入密码进行二次确认");
+        return Promise.reject(
+          "Please enter the password again for secondary confirmation"
+        );
       } else if (value !== formState.password) {
-        return Promise.reject("前后两次密码输入不一致");
+        return Promise.reject(
+          "The two passwords entered before and after are inconsistent"
+        );
       }
       return Promise.resolve();
     };
@@ -44,7 +50,7 @@ export default defineComponent({
       type: [
         {
           required: true,
-          message: "请选择你的身份再进行注册",
+          message: "Please choose your identity to register",
           trigger: "blur",
         },
       ],
@@ -52,12 +58,12 @@ export default defineComponent({
         {
           min: 8,
           max: 16,
-          message: "账号长度为8~16位",
+          message: "Account length is 8~16 digits",
           trigger: "change",
         },
         {
           required: true,
-          message: "请填写你的账号",
+          message: "Please fill in your account",
           trigger: "blur",
         },
       ],
@@ -99,7 +105,7 @@ export default defineComponent({
       reset,
       isRegistering,
       labelCol: { span: 6 },
-      wrapperCol: { span: 14 },
+      wrapperCol: { span: 16 },
     };
   },
 });
@@ -108,7 +114,7 @@ export default defineComponent({
 <template>
   <div class="register_container">
     <div class="content">
-      <span class="title">欢迎注册</span>
+      <span class="title">welcome to register</span>
       <div class="form_area">
         <a-form
           ref="formRef"
@@ -117,31 +123,35 @@ export default defineComponent({
           :label-col="labelCol"
           :wrapper-col="wrapperCol"
         >
-          <a-form-item has-feedback label="账号" name="account">
+          <a-form-item has-feedback label="account" name="account">
             <a-input
               v-model:value="formState.account"
-              placeholder="请填写账号"
+              placeholder="Please fill in the account number"
             />
           </a-form-item>
-          <a-form-item has-feedback label="密码" name="password">
+          <a-form-item has-feedback label="password" name="password">
             <a-input-password
               v-model:value="formState.password"
-              placeholder="请填写密码"
+              placeholder="Please fill in the password"
             />
           </a-form-item>
-          <a-form-item has-feedback label="二次确认" name="password2">
+          <a-form-item
+            has-feedback
+            label="Second confirmation"
+            name="password2"
+          >
             <a-input-password
               v-model:value="formState.password2"
-              placeholder="请再次填写密码"
+              placeholder="please re-enter the password"
             />
           </a-form-item>
-          <a-form-item label="用户类型" name="type">
+          <a-form-item label="user type" name="type">
             <a-select
               v-model:value="formState.type"
-              placeholder="请选择你的注册身份"
+              placeholder="Please choose your registration status"
             >
-              <a-select-option value="student">学生</a-select-option>
-              <a-select-option value="manager">俱乐部经理</a-select-option>
+              <a-select-option value="student">student</a-select-option>
+              <a-select-option value="manager">club manager</a-select-option>
             </a-select>
           </a-form-item>
           <div class="operation_area">
@@ -150,14 +160,14 @@ export default defineComponent({
               type="primary"
               @click="handleRegister"
               :loading="isRegistering"
-              >注册</a-button
+              >register</a-button
             >
             <a-button
               size="large"
               style="margin-left: 20px"
               type="dashed"
               @click="reset"
-              >清空</a-button
+              >reset</a-button
             >
           </div>
         </a-form>
@@ -175,7 +185,7 @@ export default defineComponent({
   align-items: center;
   background-color: #b8c4d1;
   .content {
-    width: 480px;
+    width: 700px;
     height: 600px;
     background-color: white;
     border-radius: 15px;

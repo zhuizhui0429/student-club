@@ -43,36 +43,41 @@ const labelCol = { span: 4 };
 const wrapperCol = { span: 14, offset: 2 };
 
 const rules: Record<keyof CreateActivityPayload, RuleObject | RuleObject[]> = {
-  poster: { required: true, message: "请上传活动的海报图" },
+  poster: { required: true, message: "Please upload a poster" },
   title: [
     {
       required: true,
-      message: "请填写活动名称",
+      message: "Please fill in the event name",
       trigger: "blur",
     },
     {
       min: 2,
       max: 20,
-      message: "活动名称的长度应该在2~20位之间",
+      message:
+        "The length of the activity name should be between 2 and 20 characters",
       trigger: "change",
     },
   ],
   location: {
     required: true,
-    message: "请填写活动地点",
+    message: "Please fill in the event location",
     trigger: "blur",
   },
-  entryCondition: { required: true, message: "请设置活动的入场条件" },
+  entryCondition: {
+    required: true,
+    message: "Please set the entry conditions for the event",
+  },
   description: [
     {
       required: true,
-      message: "请填写活动的详情信息",
+      message: "Please fill in the details of the event",
       trigger: "blur",
     },
     {
       min: 10,
       max: 300,
-      message: "活动的详情信息字数应该在10~300之间",
+      message:
+        "The number of words for the detailed information of the event should be between 10 and 300",
       trigger: "change",
     },
   ],
@@ -97,25 +102,28 @@ const handlePublishActivity = () => {
       :labelCol="labelCol"
       :wrapperCol="wrapperCol"
     >
-      <a-form-item label="活动海报" name="poster">
+      <a-form-item label="event poster" name="poster">
         <AvatarUpload
           v-model:avatarFile="formState.poster"
           :initialAvatar="formState.poster"
         />
       </a-form-item>
-      <a-form-item label="活动名称" name="title">
-        <a-input v-model:value="formState.title" placeholder="请输入活动名称" />
-      </a-form-item>
-      <a-form-item label="举办地点" name="location">
+      <a-form-item label="Event name" name="title">
         <a-input
-          v-model:value="formState.location"
-          placeholder="请输入活动地点"
+          v-model:value="formState.title"
+          placeholder="Please enter event name"
         />
       </a-form-item>
-      <a-form-item label="入场条件" name="entryCondition">
+      <a-form-item label="Venue" name="location">
+        <a-input
+          v-model:value="formState.location"
+          placeholder="Please enter event location"
+        />
+      </a-form-item>
+      <a-form-item label="Entry condition" name="entryCondition">
         <a-select
           v-model:value="formState.entryCondition"
-          placeholder="请选择入场条件"
+          placeholder="Entry conditions"
         >
           <a-select-option
             v-for="condition in entryConditions"
@@ -125,7 +133,7 @@ const handlePublishActivity = () => {
           >
         </a-select>
       </a-form-item>
-      <a-form-item label="活动介绍" name="description">
+      <a-form-item label="activity description" name="description">
         <a-textarea
           :maxlength="300"
           :rows="4"
@@ -136,7 +144,7 @@ const handlePublishActivity = () => {
       </a-form-item>
       <a-form-item :wrapperCol="{ offset: 9, span: 8 }">
         <a-button type="primary" size="large" @click="handlePublishActivity"
-          >{{ type === "publish" ? "发布" : "更新" }}活动</a-button
+          >{{ type === "publish" ? "release" : "update" }}event</a-button
         >
       </a-form-item>
     </a-form>

@@ -22,7 +22,6 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor(new Reflector()));
   const config = new DocumentBuilder()
     .setTitle('studentClub')
-    .setDescription('学生俱乐部社交系统')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);

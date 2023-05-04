@@ -19,20 +19,20 @@ export default defineComponent({
     });
     const rules: Record<string, RuleObject | RuleObject[]> = {
       account: [
-        { required: true, message: "请输入账号", trigger: "blur" },
+        { required: true, message: "please enter account", trigger: "blur" },
         {
           min: 8,
           max: 16,
-          message: "账号长度为8~16位",
+          message: "Account length is 8~16 digits",
           trigger: "blur",
         },
       ],
       password: [
-        { required: true, message: "请输入密码", trigger: "blur" },
+        { required: true, message: "please enter password", trigger: "blur" },
         {
           min: 8,
           max: 16,
-          message: "密码长度为8~16位",
+          message: "Password length is 8~16 digits",
           trigger: "blur",
         },
       ],
@@ -59,8 +59,8 @@ export default defineComponent({
       formState,
       rules,
       submit,
-      labelCol: { span: 4 },
-      wrapperCol: { span: 18, offset: 2 },
+      labelCol: { span: 10 },
+      wrapperCol: { span: 14 },
       navigateToRegister,
     };
   },
@@ -76,17 +76,19 @@ export default defineComponent({
       <div class="welcome_area">
         <div class="top_logo">
           <PlusSquareOutlined />
-          <span class="title">学生俱乐部系统</span>
+          <span class="title">Student Club System</span>
         </div>
         <div class="detail">
-          <span class="welcome">欢迎回来</span>
-          <span class="description">这里是学生俱乐部平台</span>
-          <span class="description">来加入更多有趣的俱乐部吧！</span>
-          <Button @click="navigateToRegister">没账号，去注册</Button>
+          <span class="welcome">Welcome back</span>
+          <span class="description">This is the student club platform</span>
+          <span class="description">Come and join more interesting clubs!</span>
+          <Button @click="navigateToRegister"
+            >No account, go to register</Button
+          >
         </div>
       </div>
       <div class="login_area">
-        <span class="login_text">登录俱乐部系统</span>
+        <span class="login_text">Log in to the club system</span>
         <div class="form_area">
           <a-form
             ref="formRef"
@@ -95,21 +97,21 @@ export default defineComponent({
             :labelCol="labelCol"
             :wrapperCol="wrapperCol"
           >
-            <a-form-item label="账号" name="account">
+            <a-form-item label="account" name="account">
               <a-input
                 v-model:value="formState.account"
-                placeholder="请输入账号..."
+                placeholder="please enter account..."
               />
             </a-form-item>
-            <a-form-item label="密码" name="password">
+            <a-form-item label="password" name="password">
               <a-input
                 type="password"
                 v-model:value="formState.password"
-                placeholder="请输入密码"
+                placeholder="please enter password"
               />
             </a-form-item>
             <a-form-item>
-              <a-button type="primary" @click="submit">现在登录</a-button>
+              <a-button type="primary" @click="submit">login now</a-button>
             </a-form-item>
           </a-form>
         </div>

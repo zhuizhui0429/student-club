@@ -55,12 +55,15 @@ export default defineComponent({
     };
 
     const map: Record<string, { title: string; subMenuKey?: string }> = {
-      "/clubSquare": { title: "俱乐部广场" },
-      "/personalCenter": { title: "个人中心" },
-      "/publishActivity": { title: "发布活动", subMenuKey: "myClub" },
-      "/manageClubMember": { title: "管理成员", subMenuKey: "myClub" },
-      "/activityHistory": { title: "历史活动", subMenuKey: "myClub" },
-      "/createClub": { title: "新增俱乐部" },
+      "/clubSquare": { title: "club square" },
+      "/personalCenter": { title: "personal center" },
+      "/publishActivity": { title: "release activity", subMenuKey: "myClub" },
+      "/manageClubMember": { title: "management member", subMenuKey: "myClub" },
+      "/activityHistory": {
+        title: "historical activities",
+        subMenuKey: "myClub",
+      },
+      "/createClub": { title: "new club" },
     };
     const paths = Object.keys(map);
     const menuState = reactive<MenuProps>({
@@ -101,10 +104,10 @@ export default defineComponent({
       updateEmailReceiveConfig(userStore.id, config);
     };
     const textMap: Record<EmailReceiveConfig, string> = {
-      both: "接受所有通知",
-      onlyUpdate: "仅接受活动更新的通知",
-      onlyPublish: "仅接受活动发布的通知",
-      none: "不接受任何通知",
+      both: "accept all notifications",
+      onlyUpdate: "Receive notifications only for event updates",
+      onlyPublish: "Receive notifications only for event postings",
+      none: "do not accept any notice",
     };
 
     return {
@@ -144,7 +147,7 @@ export default defineComponent({
     <div class="sidebar_container">
       <div class="top">
         <BankOutlined style="fontsize: 20px; color: white" />
-        <span class="title">学生俱乐部社交系统</span>
+        <span class="title">Student Club Social System</span>
       </div>
       <a-menu
         @click="handleClickMenuItem"
@@ -158,7 +161,7 @@ export default defineComponent({
           <template #icon>
             <MailOutlined />
           </template>
-          俱乐部广场
+          club square
         </a-menu-item>
         <a-menu-item
           key="/personalCenter"
@@ -167,22 +170,24 @@ export default defineComponent({
           <template #icon>
             <UserOutlined />
           </template>
-          个人中心
+          personal center
         </a-menu-item>
         <a-sub-menu key="myClub" v-if="type === 'manager'">
           <template #icon>
             <UserOutlined />
           </template>
-          <template #title>我的俱乐部</template>
-          <a-menu-item key="/publishActivity">发布活动</a-menu-item>
-          <a-menu-item key="/manageClubMember">管理成员</a-menu-item>
-          <a-menu-item key="/activityHistory">历史活动</a-menu-item>
+          <template #title>my club</template>
+          <a-menu-item key="/publishActivity">release activity</a-menu-item>
+          <a-menu-item key="/manageClubMember">management member</a-menu-item>
+          <a-menu-item key="/activityHistory"
+            >historical activities</a-menu-item
+          >
         </a-sub-menu>
         <a-menu-item key="/createClub" v-if="type === 'admin'">
           <template #icon>
             <UserOutlined />
           </template>
-          新增俱乐部
+          new club
         </a-menu-item>
       </a-menu>
     </div>
@@ -200,7 +205,7 @@ export default defineComponent({
               color="#dcebe4"
               trigger="click"
             >
-              <template #title>邮件通知设置</template>
+              <template #title>Email Notification Settings</template>
               <template #content>
                 <div class="email_setting_content">
                   <a-radio-group
@@ -229,7 +234,7 @@ export default defineComponent({
               color="#dcebe4"
               trigger="click"
             >
-              <template #title>我的消息</template>
+              <template #title>my messages</template>
               <template #content>
                 <MyMessage :messageList="messages" />
               </template>
@@ -247,23 +252,23 @@ export default defineComponent({
               </div>
             </a-popover>
             <img :src="avatar" alt="" />
-            <span class="account_info">欢迎回来，{{ name }}</span>
+            <span class="account_info">Welcome back,{{ name }}</span>
             <div class="divider"></div>
             <a-popconfirm
-              title="你确定退出登录吗？"
-              ok-text="退出"
-              cancel-text="取消"
+              title="Are you sure to log out?"
+              ok-text="quit"
+              cancel-text="cancel"
               @confirm="handleExit"
               placement="left"
             >
               <div class="exit">
                 <PoweroffOutlined style="fontsize: 16px; margin: 0px 10px" />
-                <span>退出</span>
+                <span>quit</span>
               </div>
             </a-popconfirm>
           </template>
           <p class="un_login" @click="navigateToLogin" v-else>
-            当前暂未登录,请尽快登录
+            Currently not logged in, please log
           </p>
         </div>
       </div>
@@ -386,7 +391,7 @@ export default defineComponent({
 }
 
 .email_setting_content {
-  width: 200px;
+  width: 400px;
   height: 100px;
 }
 </style>

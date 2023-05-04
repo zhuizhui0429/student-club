@@ -12,7 +12,7 @@ export class ClubController {
 
   @Post('create')
   @ApiOperation({ description: '创建俱乐部' })
-  @SetMetadata('successMessage', '创建俱乐部成功')
+  @SetMetadata('successMessage', 'create club success')
   @UseInterceptors(FileInterceptor('image'))
   async createClub(@UploadedFile() poster: Express.Multer.File & { url: string }, @Body() payload: Omit<CreateClubPayloadType, 'poster'>) {
     const { url } = poster
@@ -22,7 +22,7 @@ export class ClubController {
 
   @Get('allPreviewInfo')
   @ApiOperation({ description: '获取所有俱乐部的预览信息' })
-  @SetMetadata('successMessage', '获取成功')
+  @SetMetadata('successMessage', 'get success')
   async getAllClubPreviewInfo() {
     const res = await this.clubService.getAllClubPreviewInfo()
     return res
@@ -30,7 +30,7 @@ export class ClubController {
 
   @Get('allActivities')
   @ApiOperation({ description: '获取某个俱乐部的所有活动' })
-  @SetMetadata('successMessage', '获取成功')
+  @SetMetadata('successMessage', 'get success')
   async getAllActivitiesOfClub(@Query('managerId') managerId: number) {
     const res = await this.clubService.getAllActivities(managerId)
     return res
@@ -38,7 +38,7 @@ export class ClubController {
 
   @Get('members')
   @ApiOperation({ description: '获取某个俱乐部的所有成员' })
-  @SetMetadata('successMessage', '获取成功')
+  @SetMetadata('successMessage', 'get success')
   async getMemberCountOfClub(@Query('managerId') clubId: number) {
     console.log('id', clubId)
     const res = await this.clubService.getMembersOfClub(clubId)
@@ -47,7 +47,7 @@ export class ClubController {
 
   @Get('allActivitiesByClubId')
   @ApiOperation({ description: '获取某个俱乐部的所有活动' })
-  @SetMetadata('successMessage', '获取成功')
+  @SetMetadata('successMessage', 'get success')
   async getAllActivitiesByClubId(@Query('clubId') id: number) {
     const res = await this.clubService.getActivitiesByClubId(id)
     return res
@@ -55,7 +55,7 @@ export class ClubController {
 
   @Get('membersByClubId')
   @ApiOperation({ description: '获取某个俱乐部的所有成员' })
-  @SetMetadata('successMessage', '获取成功')
+  @SetMetadata('successMessage', 'get success')
   async getMembersByClubId(@Query('clubId') clubId: number) {
     const res = await this.clubService.getMembersByClubId(clubId)
     return res
@@ -63,7 +63,7 @@ export class ClubController {
 
   @Post('join')
   @ApiOperation({ description: '加入俱乐部' })
-  @SetMetadata('successMessage', '加入成功')
+  @SetMetadata('successMessage', 'get success')
   @ApiBody({ schema: { example: JoinClubExample } })
   async JoinClub(@Body() payload: typeof JoinClubExample) {
     const { clubId, userId } = payload
@@ -73,7 +73,7 @@ export class ClubController {
 
   @Post('judgeIsJoin')
   @ApiOperation({ description: '判断用户是否加入某个俱乐部' })
-  @SetMetadata('successMessage', '判断成功')
+  @SetMetadata('successMessage', 'Judge success')
   @ApiBody({ schema: { example: JudgeIsJoinExample } })
   async judgeIsJoin(@Body() payload: typeof JudgeIsJoinExample) {
     const { clubId, userId } = payload
@@ -83,7 +83,7 @@ export class ClubController {
 
   @Post('approveJoin')
   @ApiOperation({ description: '批准用户加入俱乐部的申请' })
-  @SetMetadata('successMessage', '已同意加入')
+  @SetMetadata('successMessage', 'agreed to join')
   async approveJoin(@Body() payload: ApproveJoinPayloadType) {
     const res = await this.clubService.approveJoin(payload)
     return res
@@ -91,7 +91,7 @@ export class ClubController {
 
   @Post('refuseJoin')
   @ApiOperation({ description: '拒绝用户加入俱乐部的申请' })
-  @SetMetadata('successMessage', '已拒绝加入')
+  @SetMetadata('successMessage', 'declined to join')
   async refuseJoin(@Body() payload: RefuseJoinPayloadType) {
     const res = await this.clubService.refuseJoin(payload)
     return res

@@ -46,7 +46,7 @@ export default defineComponent({
     <a-upload :showUploadList="false" :before-upload="beforeUpload">
       <a-button>
         <upload-outlined></upload-outlined>
-        点击上传头像
+        Click to upload avatar
       </a-button>
     </a-upload>
     <a-image

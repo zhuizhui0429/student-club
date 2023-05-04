@@ -77,7 +77,7 @@ export default defineComponent({
             : ([
                 {
                   required: true,
-                  message: "你还未选择过自己的头像,请上传头像",
+                  message: "Please upload an avatar",
                 },
               ] as RuleObject[])),
         ],
@@ -86,38 +86,38 @@ export default defineComponent({
         {
           min: 2,
           max: 10,
-          message: "昵称的长度需要在2~10之间",
+          message: "The length of the nickname needs to be between 2 and 10",
           trigger: "blur",
         },
         {
           required: true,
-          message: "你还未填写过自己的昵称,请填写",
+          message: "Please fill in nickname",
         },
       ],
       college: [
         {
           required: true,
-          message: "你还未选择过自己的学院信息,请选择学院",
+          message: "Please select a college",
         },
       ],
       grade: [
         {
           required: true,
-          message: "你还未选择过自己的年级信息,请选择年级",
+          message: "Please select grade",
         },
       ],
       email: [
         {
           validator: validateEmail,
           trigger: "change",
-          message: "邮箱格式不正确",
+          message: "E-mail format is incorrect",
         },
       ],
       personalProfile: [
         {
           min: 5,
           max: 200,
-          message: "个人简介的长度需要在5~200之间",
+          message: "The length of the profile needs to be between 5 and 200",
           trigger: "blur",
         },
       ],
@@ -185,22 +185,22 @@ export default defineComponent({
       :labelCol="labelCol"
       :wrapperCol="wrapperCol"
     >
-      <a-form-item label="头像" name="avatar">
+      <a-form-item label="avatar" name="avatar">
         <AvatarUpload
           v-model:avatarFile="formState.avatar"
           :initialAvatar="initialAvatar"
         />
       </a-form-item>
-      <a-form-item label="昵称" name="nickname">
+      <a-form-item label="name" name="nickname">
         <a-input
           v-model:value="formState.nickname"
-          placeholder="请输入新的昵称"
+          placeholder="Please enter a new nickname"
         />
       </a-form-item>
-      <a-form-item label="学院" name="college">
+      <a-form-item label="college" name="college">
         <a-select
           v-model:value="formState.college"
-          placeholder="请选择你的学院"
+          placeholder="Please select a college"
         >
           <a-select-option
             v-for="college in colleges"
@@ -210,8 +210,11 @@ export default defineComponent({
           >
         </a-select>
       </a-form-item>
-      <a-form-item label="年级" name="grade">
-        <a-select v-model:value="formState.grade" placeholder="请选择你的年级">
+      <a-form-item label="grade" name="grade">
+        <a-select
+          v-model:value="formState.grade"
+          placeholder="Please select a grade"
+        >
           <a-select-option
             v-for="grade in grades"
             :key="grade"
@@ -220,13 +223,13 @@ export default defineComponent({
           >
         </a-select>
       </a-form-item>
-      <a-form-item label="邮箱" name="email">
+      <a-form-item label="email" name="email">
         <a-input
           v-model:value="formState.email"
-          placeholder="可绑定邮箱接受俱乐部邮件通知"
+          placeholder="You can bind your mailbox to receive club email notifications"
         />
       </a-form-item>
-      <a-form-item label="个人简介" name="personalProfile">
+      <a-form-item label="profile" name="personalProfile">
         <a-textarea
           :rows="2"
           style="resize: none"
@@ -235,7 +238,7 @@ export default defineComponent({
       </a-form-item>
       <a-form-item :wrapperCol="{ offset: 8, span: 8 }">
         <a-button type="primary" size="large" @click="handleUpdateInfo"
-          >更新信息</a-button
+          >Update information</a-button
         >
       </a-form-item>
     </a-form>

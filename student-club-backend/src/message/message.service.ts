@@ -26,7 +26,7 @@ export class MessageService {
       .getOne()
 
     if (hasMessageUnhandled) {
-      throw new HttpException('你的上一条申请还未被俱乐部经理受理,请勿重复申请', HttpStatus.FORBIDDEN)
+      throw new HttpException('Your last application has not been accepted by the club manager, please do not apply again', HttpStatus.FORBIDDEN)
     }
 
     const messageEntity = await this.messageRepository.save({ ...rest, type, senderId, createTime: new Date(), handleStatus: type === 'joinClubApplication' ? 'pending' : 'none' })

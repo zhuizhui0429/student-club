@@ -34,32 +34,32 @@ onMounted(() => renderTable());
 
 const columns: ColumnsType<ActivityTableRecordType> = [
   {
-    title: "活动名称",
+    title: "Event name",
     dataIndex: "titlePoster",
     key: "titlePoster",
     width: 240,
   },
   {
-    title: "活动简介",
+    title: "Activity introduction",
     dataIndex: "description",
     key: "description",
     ellipsis: true,
     width: 240,
   },
   {
-    title: "活动地点",
+    title: "Event Location",
     dataIndex: "location",
     key: "location",
     ellipsis: true,
   },
   {
-    title: "入场条件",
+    title: "Entry conditions",
     key: "entryCondition",
     dataIndex: "entryCondition",
     width: 100,
   },
   {
-    title: "举办日期",
+    title: "Date",
     key: "date",
     dataIndex: "date",
     width: 120,
@@ -71,7 +71,7 @@ const columns: ColumnsType<ActivityTableRecordType> = [
     width: 160,
   },
   {
-    title: "操作",
+    title: "operation",
     key: "operation",
     width: 200,
   },
@@ -127,8 +127,8 @@ const updateActivityInfo = (newState: UpdateActivityFormState) => {
     <template #bodyCell="{ record, column, text }">
       <div class="operation_area" v-if="column.key === 'operation'">
         <a-button type="primary" @click="handleClickUpdateBtn(record)"
-          >更新活动信息</a-button
-        >
+          >Update event
+        </a-button>
       </div>
       <div class="activity_name" v-else-if="column.key === 'titlePoster'">
         <img :src="text.poster" alt="" />
@@ -137,13 +137,13 @@ const updateActivityInfo = (newState: UpdateActivityFormState) => {
       <a-button
         @click="handleClickRsvpBtn(record.id)"
         v-else-if="column.key === 'rsvp'"
-        >查看rsvp</a-button
+        >view rsvp</a-button
       >
     </template>
   </a-table>
   <a-modal
     v-model:open="ActivityFormModalOpen"
-    title="更新活动信息"
+    title="Update event information"
     :footer="null"
     width="848px"
     :bodyStyle="{ width: 800 }"

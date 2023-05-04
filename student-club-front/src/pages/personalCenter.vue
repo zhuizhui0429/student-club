@@ -18,7 +18,7 @@ import { storeToRefs } from "pinia";
 export default defineComponent({
   setup() {
     const userStore = useUserStore();
-    const { name, grade, college, avatar, description } =
+    const { name, grade, college, avatar, description, email } =
       storeToRefs(userStore);
     const joinedClubList = ref<Club[]>([]);
     const modalVisible = ref<boolean>(false);
@@ -29,13 +29,13 @@ export default defineComponent({
       if (hasTiped) {
         return;
       }
-      notification.open({
-        duration: 5,
-        message: "温馨提示",
-        description:
-          "可同时按住shift并且滚动滑轮以横向移动查看您参加的所有俱乐部",
-        icon: h(SmileOutlined, { style: { color: "#108ee9" } }),
-      });
+      // notification.open({
+      //   duration: 5,
+      //   message: "温馨提示",
+      //   description:
+      //     "可同时按住shift并且滚动滑轮以横向移动查看您参加的所有俱乐部",
+      //   icon: h(SmileOutlined, { style: { color: "#108ee9" } }),
+      // });
       hasTiped = true;
     };
 
@@ -57,6 +57,7 @@ export default defineComponent({
       college,
       avatar,
       description,
+      email,
     };
   },
   components: {
@@ -75,7 +76,7 @@ export default defineComponent({
   <div class="personal_center_container">
     <div class="info">
       <div class="account_info">
-        <p class="title">账号信息</p>
+        <p class="title">account information</p>
         <div class="content">
           <div class="top">
             <img :src="avatar" alt="" />
@@ -89,8 +90,8 @@ export default defineComponent({
                 <CarryOutOutlined style="font-size: 14px; color: #ffbb38" />
               </div>
               <div class="right">
-                <p class="name">我的年级</p>
-                {{ grade || "暂未填写" }}
+                <p class="name">grade</p>
+                {{ grade || "not yet filled" }}
               </div>
             </div>
             <div class="item">
@@ -98,8 +99,8 @@ export default defineComponent({
                 <TeamOutlined style="font-size: 14px; color: #396aff" />
               </div>
               <div class="right">
-                <p class="name">我的学院</p>
-                {{ college || "暂未填写" }}
+                <p class="name">college</p>
+                {{ college || "not yet filled" }}
               </div>
             </div>
             <div class="item">
@@ -107,7 +108,7 @@ export default defineComponent({
                 <AliwangwangOutlined style="font-size: 14px; color: #4c78ff" />
               </div>
               <div class="right">
-                <p class="name">已加入的俱乐部数</p>
+                <p class="name">joined clubs count</p>
                 {{ joinedClubList.length }}
               </div>
             </div>
@@ -115,10 +116,10 @@ export default defineComponent({
         </div>
       </div>
       <div class="joined_club">
-        <p class="title">已加入的俱乐部</p>
+        <p class="title">clubs joined</p>
         <div class="club_list">
           <div class="empty_list" v-if="!joinedClubList.length">
-            <a-empty description="暂未加入任何俱乐部" />
+            <a-empty description="Haven't joined any club yet" />
           </div>
 
           <div
@@ -128,7 +129,7 @@ export default defineComponent({
           >
             <img :src="club.poster" alt="" />
             <p class="club_name">{{ club.clubName }}</p>
-            <p class="member_count">{{ club.memberCount }}成员</p>
+            <!-- <p class="member_count">{{ club.memberCount }}成员</p> -->
             <a-button
               danger
               type="default"
@@ -138,30 +139,41 @@ export default defineComponent({
               <template #icon>
                 <ExclamationCircleOutlined />
               </template>
-              退部
+              exit
             </a-button>
           </div>
         </div>
       </div>
-      <a-modal v-model:open="modalVisible" title="确认要退出该俱乐部吗？">
+      <a-modal
+        v-model:open="modalVisible"
+        title="Are you sure you want to leave this club?"
+      >
         <div class="exit_club_modal_content">
           <WarningOutlined />
-          <p>请确认是否是误触操作，这将会导致你永久退出该俱乐部</p>
+          <p>
+            Please confirm whether it is a mistaken operation, which will lead
+            to your permanent withdrawal from the club
+          </p>
         </div>
       </a-modal>
     </div>
     <div class="edit_btn">
       <a-button type="primary" size="large" @click="editFormVisible = true"
-        >编辑个人信息</a-button
+        >edit personal information</a-button
       >
     </div>
-    <a-modal title="更新个人信息" :footer="null" v-model:open="editFormVisible">
+    <a-modal
+      title="update personal information"
+      :footer="null"
+      v-model:open="editFormVisible"
+    >
       <EditUserInfo
         :initialAvatar="avatar"
         :college="college"
         :nickname="name"
         :grade="grade"
         :personalProfile="description"
+        :email="email"
       />
     </a-modal>
   </div>

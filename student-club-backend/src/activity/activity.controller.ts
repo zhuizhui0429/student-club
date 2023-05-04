@@ -11,7 +11,7 @@ export class ActivityController {
 
   @Post('create')
   @ApiOperation({ description: '创建活动' })
-  @SetMetadata('successMessage', '创建活动成功')
+  @SetMetadata('successMessage', 'Event created successfully')
   @UseInterceptors(FileInterceptor('image'))
   async createClub(@UploadedFile() poster: Express.Multer.File & { url: string }, @Body() payload: Omit<CreateActivityPayloadType, 'poster'>) {
     const { url } = poster
@@ -21,7 +21,7 @@ export class ActivityController {
 
   @Post('update')
   @ApiOperation({ description: '更新活动' })
-  @SetMetadata('successMessage', '更新活动成功')
+  @SetMetadata('successMessage', 'The update activity was successful')
   @UseInterceptors(FileInterceptor('image'))
   async updateActivity(@UploadedFile() poster: Express.Multer.File & { url: string }, @Body() payload: Omit<UpdateActivityPayloadType, 'poster'>) {
     const { url } = poster || {}

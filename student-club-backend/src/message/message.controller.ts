@@ -11,7 +11,7 @@ export class MessageController {
 
   @Post('send')
   @ApiOperation({ description: '发送消息' })
-  @SetMetadata('successMessage', '发送成功')
+  @SetMetadata('successMessage', 'Sent successfully')
   @ApiBody({ schema: { example: sendMessageExample } })
   async sendMessage(@Body() payload: SendMessagePayloadType) {
     const res = await this.messageService.sendMessage(payload)
@@ -20,7 +20,7 @@ export class MessageController {
 
   @Get('getAll')
   @ApiOperation({ description: '获取某个用户的所有消息' })
-  @SetMetadata('successMessage', '获取消息成功')
+  @SetMetadata('successMessage', 'Get the message successfully')
   async getAllMessage(@Query('userId') userId: number) {
     const res = await this.messageService.getAllMessage(userId)
     return res

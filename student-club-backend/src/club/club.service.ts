@@ -113,8 +113,8 @@ export class ClubService {
                 senderName,
                 senderAvatar,
                 type: 'joinClubApproval',
-                title: '同意了你的入部申请',
-                content: `欢迎加入${clubEntity.clubName}大家提`,
+                title: 'Approved your admission application',
+                content: `Welcome to ${clubEntity.clubName} family`,
                 createTime: new Date()
             }),
             this.messageRepository.update({

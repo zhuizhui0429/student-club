@@ -19,31 +19,39 @@ import AvatarUpload from "@/components/avatarUpload.vue";
 const formRef = ref<FormExpose>({} as any);
 const formState = reactive<ClubFormStateType>({} as any);
 const rules: Record<keyof ClubFormStateType, RuleObject | RuleObject[]> = {
-  poster: { required: true, message: "请上传活动的海报图" },
+  poster: {
+    required: true,
+    message: "Please upload a poster image of the event",
+  },
   clubName: [
     {
       required: true,
-      message: "请填写俱乐部名称",
+      message: "Please fill in the club name",
       trigger: "blur",
     },
     {
       min: 2,
       max: 20,
-      message: "活动名称的长度应该在2~20位之间",
+      message:
+        "The length of the club name should be between 2 and 20 characters",
       trigger: "change",
     },
   ],
-  managerId: { required: true, message: "请选择该俱乐部的经理" },
+  managerId: {
+    required: true,
+    message: "Please select a manager for this club",
+  },
   description: [
     {
       required: true,
-      message: "请填写俱乐部的简介",
+      message: "Please fill in the club profile",
       trigger: "blur",
     },
     {
       min: 10,
       max: 300,
-      message: "俱乐部的简介字数应该在10~300之间",
+      message:
+        "The number of words in the introduction of the club should be between 10 and 300",
       trigger: "change",
     },
   ],
@@ -74,22 +82,22 @@ const handleCreateClub = () => {
       :labelCol="labelCol"
       :wrapperCol="wrapperCol"
     >
-      <a-form-item label="俱乐部头像" name="poster">
+      <a-form-item label="club avatar" name="poster">
         <AvatarUpload
           v-model:avatarFile="formState.poster"
           :initialAvatar="formState.poster"
         />
       </a-form-item>
-      <a-form-item label="俱乐部名称" name="clubName">
+      <a-form-item label="club name" name="clubName">
         <a-input
           v-model:value="formState.clubName"
-          placeholder="请输入俱乐部名称"
+          placeholder="Please enter a club name"
         />
       </a-form-item>
-      <a-form-item label="俱乐部经理" name="managerId">
+      <a-form-item label="club manager" name="managerId">
         <a-select
           v-model:value="formState.managerId"
-          placeholder="请选择新建俱乐部对应的经理"
+          placeholder="Please select the manager corresponding to the new club"
         >
           <a-select-option
             v-for="manager in managerOptions"
@@ -104,7 +112,7 @@ const handleCreateClub = () => {
           >
         </a-select>
       </a-form-item>
-      <a-form-item label="俱乐部简介" name="description">
+      <a-form-item label="Club Profile" name="description">
         <a-textarea
           :maxlength="300"
           :rows="4"
@@ -115,7 +123,7 @@ const handleCreateClub = () => {
       </a-form-item>
       <a-form-item :wrapperCol="{ offset: 9, span: 8 }">
         <a-button type="primary" size="large" @click="handleCreateClub"
-          >创建俱乐部</a-button
+          >Create a club</a-button
         >
       </a-form-item>
     </a-form>

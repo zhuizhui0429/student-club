@@ -33,6 +33,7 @@ onMounted(() => {
   getAllMembersOfClub(userStore.id).then((res) => {
     data.value = res.data.data.map(({ name, avatar, ...rest }) => ({
       ...rest,
+      joinDays: "100 days ago",
       member: { name, avatar },
     }));
     loadingData.value = false;
@@ -54,7 +55,7 @@ const searchInput = ref();
 
 const columns: ColumnsType<ClubMemberTableRecordType> = [
   {
-    title: "成员",
+    title: "member",
     dataIndex: "member",
     key: "member",
     customFilterDropdown: true,
@@ -74,25 +75,25 @@ const columns: ColumnsType<ClubMemberTableRecordType> = [
     },
   },
   {
-    title: "年级",
+    title: "grade",
     dataIndex: "grade",
     key: "grade",
     width: 120,
   },
   {
-    title: "学院",
+    title: "college",
     dataIndex: "college",
     key: "college",
     width: 160,
   },
   {
-    title: "已加入天数",
+    title: "joinDays",
     dataIndex: "joinDays",
     key: "joinDays",
     width: 120,
   },
   {
-    title: "操作",
+    title: "operation",
     key: "operation",
   },
 ];
@@ -172,7 +173,7 @@ const handlePrivateSendMessage = (targetId: number) => {
       <div style="padding: 8px">
         <a-input
           ref="searchInput"
-          :placeholder="`搜索 ${column.title}`"
+          :placeholder="`search ${column.title}`"
           :value="selectedKeys[0]"
           style="width: 188px; margin-bottom: 8px; display: block"
           @change="
@@ -187,14 +188,14 @@ const handlePrivateSendMessage = (targetId: number) => {
           @click="handleSearch(selectedKeys, confirm, column.dataIndex)"
         >
           <template #icon><SearchOutlined /></template>
-          搜索
+          search
         </a-button>
         <a-button
           size="small"
           style="width: 90px"
           @click="handleReset(clearFilters)"
         >
-          清空
+          reset
         </a-button>
       </div>
     </template>
@@ -246,10 +247,10 @@ const handlePrivateSendMessage = (targetId: number) => {
             @click="handlePrivateSendMessage(record.id)"
             style="margin-right: 10px"
             type="primary"
-            >私发更新</a-button
+            >Private update</a-button
           >
           <a-button danger @click="handleKickBtnClick(record)"
-            >踢出俱乐部</a-button
+            >kicked out</a-button
           >
         </div>
         <span v-else>{{ text }}</span>
@@ -264,14 +265,14 @@ const handlePrivateSendMessage = (targetId: number) => {
   />
   <a-modal
     v-model:open="kickMemberModalOpen"
-    :title="`你确定要将成员${kickedMemberInfo.name}踢出俱乐部吗?`"
+    :title="`Are you sure you want to assign members ${kickedMemberInfo.name} kicked out of the club?`"
     @ok="handleKickMember"
     okType="danger"
   >
     <ExclamationCircleOutlined
       style="font-size: 20px; color: red; margin-right: 5px"
     />
-    <span>请谨慎考虑</span>
+    <span>Please consider carefully</span>
   </a-modal>
 </template>
 

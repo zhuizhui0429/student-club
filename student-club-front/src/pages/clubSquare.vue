@@ -117,7 +117,7 @@ export default defineComponent({
       @onModalClose="sendMessageModalOpen = false"
     />
     <a-modal
-      title="足球俱乐部"
+      title="club detail"
       :width="848"
       :footer="null"
       v-model:open="clubDetailModalVisible"
@@ -134,22 +134,22 @@ export default defineComponent({
             <div class="member_count">
               <PoweroffOutlined style="font-size: 30px" />
               <div>
-                <span>成员数</span>
+                <span>members</span>
                 <span>{{ memberList.length }}</span>
               </div>
             </div>
             <div class="activity_count">
               <PoweroffOutlined style="font-size: 30px" />
               <div>
-                <span>活动数</span>
+                <span>activities</span>
                 <span>{{ activityList.length }}</span>
               </div>
             </div>
           </div>
           <div class="member_area">
-            <span class="title">当前成员</span>
+            <span class="title">current member</span>
             <a-empty
-              description="暂无成员加入"
+              description="No members join yet"
               v-if="!memberList.length"
             ></a-empty>
             <div class="member_list">
@@ -175,7 +175,7 @@ export default defineComponent({
             v-bind="activity"
           />
           <a-empty
-            description="暂未举行活动"
+            description="No events yet"
             v-if="!activityList.length"
           ></a-empty>
         </div>
@@ -191,11 +191,11 @@ export default defineComponent({
           size="large"
         >
           <template #icon> <SmileTwoTone /> </template>
-          申请加入俱乐部
+          apply to join the club
         </a-button>
         <p v-else class="has_join_tip">
           <CheckCircleTwoTone style="font-size: 20px" twoToneColor="#52c41a" />
-          <span>你已加入该俱乐部</span>
+          <span>you have joined the club</span>
         </p>
       </div>
     </a-modal>
